@@ -1,0 +1,27 @@
+{
+  "name": "hip-services",
+  "version": "1.0.0",
+  "description": "RESTful web services that support the HIP project collaboration with MTI and Cambia",
+  "main": "server.js",
+  "scripts": {
+    "test": "runtests",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MedicalTeams/hip-services.git"
+  },
+  "keywords": [
+    "mti"
+  ],
+  "author": "Paul Roe <paul.roe@cambiahealth.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MedicalTeams/hip-services/issues"
+  },
+  "homepage": "https://github.com/MedicalTeams/hip-services",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3"
+  }
+}
