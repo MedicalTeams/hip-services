@@ -20,12 +20,11 @@ var config = {
 };
 var connection = new Connection(config);
 connection.on('connect', function(err) {
-// If no error, then good to proceed.
+    // If no error, then good to proceed.
     console.log("Connected");
 });
 var Request = require('tedious').Request
 var TYPES = require('tedious').TYPES;
-
 
 /*
  * GET list of clinic resources
@@ -45,7 +44,6 @@ router.get('/:clinicId', function(req, res) {
 router.get('/:clinicId/visit/:visitId', function(req, res) {
     var cid = req.params.clinicId;
     var vid = req.params.visitId;
-
     request = new Request("SELECT visit_json from raw_visit" +
         " WHERE visit_uuid = @visituuid;", function(err) {
         if (err) {
@@ -53,22 +51,25 @@ router.get('/:clinicId/visit/:visitId', function(req, res) {
     });
     request.addParameter('visituuid', TYPES.NVarChar, vid);
 
-    var result = "";
     request.on('row', function(columns) {
         columns.forEach(function(column) {
             if (column.value === null) {
-                console.log('NULL');
+                res.json(column.value);
             } else {
-                result+= column.value + " ";
+                res.json(column.value);
             }
         });
-        console.log(result);
-        result ="";
     });
 
-    connection.execSql(request );
+    request.on('done', function(rowCount, more, rows) {
+       if (rowCount === 0){
+           res.status(404).json({ warning: 'The requested visit ' + vid + ' does not exist'})
+       }
+        connection.reset();
+    });
 
-    res.json(["visit1", "visit2", "visit3"]);
+    connection.execSql(request);
+
 });
 
 router.post('/:clinicId/visit', function(req, res) {
@@ -83,20 +84,22 @@ function insertVisit(clinicId, visit) {
     request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
         " VALUES (@visituuid, @visitjson);", function(err) {
         if (err) {
-            console.log("the error: " + err);}
-        else connection.reset();
+            console.log("the error: " + err);
+            return "fail"
+        }
+        else {
+            connection.reset(function (err) {})
+            return visit.visitId;
+        }
     });
     request.addParameter('visituuid', TYPES.NVarChar, visit.visitId);
     request.addParameter('visitjson', TYPES.NVarChar , JSON.stringify(visit));
-    return connection.execSql(request);
+
+    connection.execSql(request);
+
+    return visit.visitId;
 }
 
-
-router.get('/:clinicId/visit/:visitId', function(req, res) {
-    var cid = req.params.clinicId;
-    var vid = req.params.visitId;
-    res.json({ vid: 'This is a clinic details object'});
-});
 
 module.exports = router;
     
