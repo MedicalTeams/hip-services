@@ -9,18 +9,17 @@ var Default = require('./DefaultService');
 module.exports.getAllFacilities = function getAllFacilities (req, res, next) {
   var settlement = req.swagger.params['settlement'].value;
   
+  Default.getAllFacilities(settlement, function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
 
-  var result = Default.getAllFacilities(settlement);
-
-  if(typeof result !== 'undefined') {
-      console.log(JSON.stringify(result))
-
-      res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(result || {}, null, 2));
-  }
-  else
-    console.log("no facilities found");
-    res.end();
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no facilities found");
+        res.end();
+    });
 };
 
 module.exports.getFacilityById = function getFacilityById (req, res, next) {

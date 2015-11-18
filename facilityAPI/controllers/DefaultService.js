@@ -37,32 +37,41 @@ connection.on('connect', function (err) {
     console.log("Connected");
 });
 
-exports.getAllFacilities = function (settlement) {
+exports.getAllFacilities = function (settlement, cb) {
 
-    var facilities = {};
-    var request = new Request("SELECT faclty_id, hlth_care_faclty from lkup_faclty", function (err) {
+    var facilities = [];
+    var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
+        " order by user_intrfc_sort_ord", function (err) {
         if (err) {
             console.log("the error: " + err);
-            connection.reset;
         }
         else {
-            console.log("fetched facilities")
-            connection.reset;
+            console.log("fetched facilities " + JSON.stringify(facilities))
+            cb(facilities);
         }
     });
 
-    facilities['application/json'] = [];
     request.on('row', function (columns) {
         console.log("found facility " + columns[1].value)
         var facility = {};
-        facility[columns[0].value] = columns[1].value;
-        facilities['application/json'].push(facility);
-        console.log(JSON.stringify(facilities));
+        facility.id = columns[0].value;
+        facility.name = columns[1].value;
+        facility.settlement = columns[2].value;
+        facility.country = columns[3].value;
+        facility.region = columns[4].value;
+        facilities.push(facility);
+        console.log(JSON.stringify(facility));
     });
 
-    connection.execSql(request);
-    return facilities;
-
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
 
 }
 
@@ -81,6 +90,7 @@ exports.getFacilityById = function (facilityId) {
         return examples[Object.keys(examples)[0]];
 
 }
+
 exports.getVisitsByFacility = function (facilityId) {
 
     var examples = {};

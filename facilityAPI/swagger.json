@@ -218,6 +218,15 @@
         },
         "name": {
           "type": "string"
+        },
+        "settlement": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
         }
       }
     },
