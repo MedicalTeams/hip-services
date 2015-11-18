@@ -1,7 +1,7 @@
 {
   "name": "hip-services",
   "version": "1.0.0",
-  "description": "RESTful web services that support the HIP project collaboration with MTI and Cambia",
+  "description": "A RESTful API for Medical Teams International's Health Information Program (HIP).",
   "main": "server.js",
   "scripts": {
     "test": "runtests",
@@ -16,14 +16,17 @@
   ],
   "author": "Paul Roe <paul.roe@cambiahealth.com>",
   "license": "MIT",
+  "private": true,
   "bugs": {
     "url": "https://github.com/MedicalTeams/hip-services/issues"
   },
   "homepage": "https://github.com/MedicalTeams/hip-services",
   "dependencies": {
     "body-parser": "^1.14.1",
-    "express": "^4.13.3",
+    "connect": "^3.2.0",
+    "swagger-tools": "0.8.*",
     "tedious": "^1.13.1",
+    "tedious-connection-pool": "^0.3.9",
     "winston": "^2.1.0"
   }
 }
