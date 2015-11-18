@@ -128,46 +128,9 @@ var async = require('async');
 exports.postVisitsAtFacility = function (facilityId, body) {
     var visits = body;
     var count = 0;
-    async.eachSeries(visits, function(visit, callback) {
-        var visit = visit;
-        visit.facility = facilityId;
-        visit.visitId = Date.now();
-        console.log("attempt to insert " + visit.visitId);
-
-        var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
-            " VALUES (@visituuid, @visitjson);", function(err) {
-            if (err) {
-                console.log("insert error: " + err);
-                return "fail"
-            }
-            else {
-                console.log("insert complete");
-                count++;
-                callback();
-            }
-        });
-        request.addParameter('visituuid', TYPES.NVarChar, visit.visitId);
-        request.addParameter('visitjson', TYPES.NVarChar , JSON.stringify(visit));
-
-        connection.reset(function (err) {
-            if (err) {
-                console.log("reset error: " + err);
-                return "fail"
-            }
-            else {
-                console.log("reset connection: ");
-                connection.execSql(request);
-            }
-        });
-
-    }, function(err){
-        // if any of the visit inserts produced an error, err would equal that error
-        if( err ) {
-            // ToDo talk with Mick about what he would like to happen in case of error.
-            console.log('One or more visit failed to be added');
-        } else {
-            console.log('All visits have been added');
-        }
+    async.mapSeries(visits, function(visit, next) {
+        exports.postVisitAtFacility(facilityId,visit);
+        count++;
     });
 
     return count;
