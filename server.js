@@ -3,7 +3,17 @@ var bodyParser = require('body-parser');
 var app = require('connect')();
 var http = require('http');
 var swaggerTools = require('swagger-tools');
-var logger = require('./utils/logger');
+//var logger = require('./utils/logger');
+
+var fs = require('fs');
+var util = require('util');
+var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
+var log_stdout = process.stdout;
+
+console.log = function(d) { //
+    log_file.write(util.format(d) + '\n');
+    log_stdout.write(util.format(d) + '\n');
+};
 
 // setup apps to have access to the bodyParser() features for parsing POST requests
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -38,7 +38,7 @@ pool.on('error', function(err) {
  */
 router.get('/', function(req, res) {
 
-    request = new Request("SELECT faclty_id, hlth_care_faclty from faclty", function(err) {
+    request = new Request("SELECT faclty_id, hlth_care_faclty from lkup_faclty", function(err) {
         if (err) {
             console.log("the error: " + err);}
         else {
@@ -48,7 +48,7 @@ router.get('/', function(req, res) {
         }
     });
 
-    var facilities = []
+    var facilities = [];
     request.on('row', function(columns) {
         console.log("found facility " + columns[1].value)
         var facility = {};
