@@ -98,10 +98,14 @@ router.get('/:clinicId/visit/:visitId', function(req, res) {
 
 });
 
+
 router.post('/:clinicId/visit', function(req, res) {
     res.json( insertVisit(req.params.clinicId, req.body) );
 });
 
+router.post('/:clinicId/visit/upload', function(req, res) {
+    res.json( insertVisit(req.params.clinicId, req.body) );
+});
 
 function insertVisit(clinicId, visit) {
     visit.clinicId = clinicId;

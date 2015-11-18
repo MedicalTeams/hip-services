@@ -96,6 +96,7 @@ exports.getVisitsByFacility = function (facilityId) {
         return examples[Object.keys(examples)[0]];
 
 }
+
 exports.postVisitAtFacility = function (facilityId, body) {
     var visit = body;
     visit.facility = facilityId;
@@ -121,4 +122,16 @@ exports.postVisitAtFacility = function (facilityId, body) {
     connection.execSql(request);
 
     return visit.visitId;
+}
+var async = require('async');
+
+exports.postVisitsAtFacility = function (facilityId, body) {
+    var visits = body;
+    var count = 0;
+    async.mapSeries(visits, function(visit, next) {
+        exports.postVisitAtFacility(facilityId,visit);
+        count++;
+    });
+
+    return count;
 }

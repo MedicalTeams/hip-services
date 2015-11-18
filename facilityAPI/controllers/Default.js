@@ -65,3 +65,18 @@ module.exports.postVisitAtFacility = function postVisitAtFacility (req, res, nex
   else
     res.end();
 };
+
+module.exports.postVisitsAtFacility = function postVisitsAtFacility (req, res, next) {
+    var facilityId = req.swagger.params['facilityId'].value;
+    var body = req.swagger.params['body'].value;
+
+
+    var result = Default.postVisitsAtFacility(facilityId, body);
+
+    if(typeof result !== 'undefined') {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(result || {}, null, 2));
+    }
+    else
+        res.end();
+};
