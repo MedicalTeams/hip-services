@@ -479,8 +479,7 @@
           "type": "string"
         },
         "deviceId": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string"
         },
         "injuryLocation": {
           "$ref": "#/definitions/id"
