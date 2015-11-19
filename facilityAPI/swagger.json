@@ -203,7 +203,7 @@
         }
       }
     },
-    "/citizenship": {
+    "/citizenships": {
       "get": {
         "summary": "Citizenship Lookup List",
         "description": "The Citizenship endpoint returns the list of all Citizenships that are currently registered with the API.",
