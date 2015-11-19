@@ -132,8 +132,8 @@ exports.getAllDiagnosis = function (cb) {
 
 }
 
-exports.getDiagnosisById = function (diagnosisId) {
-    var result = [];
+exports.getDiagnosisById = function (diagnosisId, cb) {
+    var result = {};
     var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
         " where diag_id = @diagnosisId", function (err) {
         if (err) {
@@ -147,12 +147,10 @@ exports.getDiagnosisById = function (diagnosisId) {
     request.addParameter('diagnosisId', TYPES.Int, diagnosisId);
 
     request.on('row', function (columns) {
-        console.log("found diagnosis " + columns[1].value)
-        var entry = {};
-        entry.id = columns[0].value;
-        entry.name = columns[1].value;
-        result.push(entry);
-        console.log(JSON.stringify(entry));
+        console.log("found diagnosis " + columns[1].value + "for id " + diagnosisId);
+        result.id = columns[0].value;
+        result.name = columns[1].value;
+        console.log(JSON.stringify(result));
     });
 
     connection.reset(function (err) {
@@ -166,20 +164,74 @@ exports.getDiagnosisById = function (diagnosisId) {
     });
 }
 
-exports.getSupplementalsByDiagnosis = function (facilityId) {
+exports.getSupplementalById = function (supplementalId, cb) {
+    var result = {};
+    var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_all_splmtl_diag" +
+        " where splmtl_diag_id = @supplementalId order by user_intrfc_sort_ord", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+        }
+        else {
+            console.log("fetched diagnosis " + JSON.stringify(result))
+            cb(result);
+        }
+    });
+    request.addParameter('supplementalId', TYPES.Int, supplementalId);
 
-    var examples = {};
+    request.on('row', function (columns) {
+        console.log("found supplemental " + columns[1].value + "for id " + supplementalId);
+        result.id = columns[0].value;
+        result.name = columns[1].value;
+        result.diagnosis = columns[2].value;
+        console.log(JSON.stringify(result));
+    });
 
-    examples['application/json'] = {
-        "name": "aeiou",
-        "id": 123456789,
-        "url": "aeiou"
-    };
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
+}
 
+exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
 
-    if (Object.keys(examples).length > 0)
-        return examples[Object.keys(examples)[0]];
+    var result = [];
+    var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_all_splmtl_diag" +
+        " where diag_id = @diagnosisId order by user_intrfc_sort_ord", function (err) {
 
+        if (err) {
+            console.log("the error: " + err);
+        }
+        else {
+            console.log("fetched supplementals " + JSON.stringify(result))
+            cb(result);
+        }
+    });
+    request.addParameter('diagnosisId', TYPES.Int, diagnosisId);
+
+    request.on('row', function (columns) {
+        console.log("found supplemental " + columns[1].value)
+        var entry = {};
+        entry.id = columns[0].value;
+        entry.name = columns[1].value;
+        entry.diagnosis = columns[2].value;
+        result.push(entry);
+        console.log(JSON.stringify(entry));
+    });
+
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
 }
 
 exports.getAllSupplementals = function (cb) {
@@ -218,19 +270,39 @@ exports.getAllSupplementals = function (cb) {
 
 }
 
-exports.getFacilityById = function (facilityId) {
+exports.getFacilityById = function (facilityId, cb) {
+    var result = {};
+    var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
+        " where faclty_id = @facilityId", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+        }
+        else {
+            console.log("fetched facilities " + JSON.stringify(result))
+            cb(result);
+        }
+    });
+    request.addParameter('facilityId', TYPES.Int, facilityId);
 
-    var examples = {};
+    request.on('row', function (columns) {
+        console.log("found facility " + columns[1].value)
+        result.id = columns[0].value;
+        result.name = columns[1].value;
+        result.settlement = columns[2].value;
+        result.country = columns[3].value;
+        result.region = columns[4].value;
+        console.log(JSON.stringify(result));
+    });
 
-    examples['application/json'] = {
-        "name": "aeiou",
-        "id": 123456789
-    };
-
-
-    if (Object.keys(examples).length > 0)
-        return examples[Object.keys(examples)[0]];
-
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
 }
 
 exports.getVisitsByFacility = function (facilityId) {
