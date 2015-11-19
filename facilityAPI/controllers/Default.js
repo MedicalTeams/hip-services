@@ -22,6 +22,53 @@ module.exports.getAllFacilities = function getAllFacilities (req, res, next) {
     });
 };
 
+
+module.exports.getAllCitizenships = function getAllCitizenships (req, res, next) {
+    Default.getAllCitizenships(function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no citizenships found");
+        res.end();
+    });
+};
+
+
+module.exports.getAllDiagnosis = function getAllDiagnosis (req, res, next) {
+    Default.getAllDiagnosis(function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no diagnosis found");
+        res.end();
+    });
+};
+
+
+module.exports.getAllSupplementals = function getAllSupplementals (req, res, next) {
+    var diagnosis = req.swagger.params['diagnosis'].value;
+
+    Default.getAllSupplementals(diagnosis, function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no diagnosis found");
+        res.end();
+    });
+};
+
 module.exports.getFacilityById = function getFacilityById (req, res, next) {
   var facilityId = req.swagger.params['facilityId'].value;
   

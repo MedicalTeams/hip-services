@@ -66,6 +66,63 @@ exports.getAllFacilities = function (settlement) {
 
 }
 
+exports.getAllFacilities = function (settlement) {
+
+    var facilities = {};
+    var request = new Request("SELECT faclty_id, hlth_care_faclty from lkup_faclty", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+            connection.reset;
+        }
+        else {
+            console.log("fetched facilities")
+            connection.reset;
+        }
+    });
+
+    facilities['application/json'] = [];
+    request.on('row', function (columns) {
+        console.log("found facility " + columns[1].value)
+        var facility = {};
+        facility[columns[0].value] = columns[1].value;
+        facilities['application/json'].push(facility);
+        console.log(JSON.stringify(facilities));
+    });
+
+    connection.execSql(request);
+    return facilities;
+
+
+}
+
+exports.getAllDiagnosis = function () {
+
+    var diagnosis = {};
+    var request = new Request("SELECT faclty_id, hlth_care_faclty from lkup_faclty", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+            connection.reset;
+        }
+        else {
+            console.log("fetched facilities")
+            connection.reset;
+        }
+    });
+
+    diagnosis['application/json'] = [];
+    request.on('row', function (columns) {
+        console.log("found facility " + columns[1].value)
+        var diag = {};
+        diag[columns[0].value] = columns[1].value;
+        facilities['application/json'].push(facility);
+        console.log(JSON.stringify(facilities));
+    });
+
+    connection.execSql(request);
+    return facilities;
+
+
+}
 
 exports.getFacilityById = function (facilityId) {
 
