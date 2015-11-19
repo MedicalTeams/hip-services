@@ -54,9 +54,7 @@ module.exports.getAllDiagnosis = function getAllDiagnosis (req, res, next) {
 
 
 module.exports.getAllSupplementals = function getAllSupplementals (req, res, next) {
-    var diagnosis = req.swagger.params['diagnosis'].value;
-
-    Default.getAllSupplementals(diagnosis, function(result) {
+    Default.getAllSupplementals( function(result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -69,18 +67,46 @@ module.exports.getAllSupplementals = function getAllSupplementals (req, res, nex
     });
 };
 
+
+module.exports.getDiagnosisById = function getDiagnosisById (req, res, next) {
+    var diagnosisId = req.swagger.params['diagnosisId'].value;
+    Default.getDiagnosisById(diagnosisId, function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no diagnosis found");
+        res.end();
+    });
+};
+
+module.exports.getSupplementalsByDiagnosis = function getSupplementalsByDiagnosis (req, res, next) {
+    var diagnosisId = req.swagger.params['diagnosisId'].value;
+    Default.getSupplementalsByDiagnosis(diagnosisId, function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no such diagnosis " + diagnosisId);
+        res.end();
+    });
+};
+
 module.exports.getFacilityById = function getFacilityById (req, res, next) {
-  var facilityId = req.swagger.params['facilityId'].value;
-  
+    var facilityId = req.swagger.params['facilityId'].value;
 
-  var result = Default.getFacilityById(facilityId);
+    var result = Default.getFacilityById(facilityId);
 
-  if(typeof result !== 'undefined') {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(result || {}, null, 2));
-  }
-  else
-    res.end();
+    if(typeof result !== 'undefined') {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(result || {}, null, 2));
+    }
+    else
+        res.end();
 };
 
 module.exports.getVisitsByFacility = function getVisitsByFacility (req, res, next) {
