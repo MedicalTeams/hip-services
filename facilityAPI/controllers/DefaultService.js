@@ -3,11 +3,11 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var Connection = require('tedious').Connection;
 var config = {
-    userName: 'dbadmin',
-    password: 'password$1',
-    server: 'mti-dev-db.database.windows.net',
+    userName: process.env.SQLAZURECONNSTR_username,
+    password: process.env.SQLAZURECONNSTR_password,
+    server: process.env.SQLAZURECONNSTR_host,
     // When you connect to Azure SQL Database, you need these next options.
-    options: {encrypt: true, database: 'Clinic'}
+    options: {encrypt: true, database: process.env.SQLAZURECONNSTR_database}
 };
 var connection;
 connection = new Connection(config);
@@ -436,7 +436,7 @@ exports.postVisitsAtFacility = function (facilityId, body) {
         // Populated fields that the mapping solution needs to have even if they are not relevant for this Visit.
         visit.injuryLocation = visit.injuryLocation || 0;
         visit.stiContactsTreated = visit.stiContactsTreated || 0;
-        
+
         console.log("attempt to insert " + visit.visitId);
 
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
