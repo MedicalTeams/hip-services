@@ -199,14 +199,16 @@ module.exports.postVisitAtFacility = function postVisitAtFacility (req, res, nex
   var body = req.swagger.params['body'].value;
   
 
-  var result = Default.postVisitAtFacility(facilityId, body);
-
-  if(typeof result !== 'undefined') {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(result || {}, null, 2));
-  }
-  else
-    res.end();
+  var result = Default.postVisitAtFacility(facilityId, body, function (result) {
+      if (typeof result !== 'undefined') {
+          console.log(JSON.stringify(result))
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(result || {}, null, 2));
+      }
+      else
+          console.log("no such facility " + facilityId);
+      res.end();
+  });
 };
 
 module.exports.postVisitsAtFacility = function postVisitsAtFacility (req, res, next) {
@@ -214,12 +216,14 @@ module.exports.postVisitsAtFacility = function postVisitsAtFacility (req, res, n
     var body = req.swagger.params['body'].value;
 
 
-    var result = Default.postVisitsAtFacility(facilityId, body);
-
-    if(typeof result !== 'undefined') {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(result || {}, null, 2));
-    }
-    else
+    var result = Default.postVisitsAtFacility(facilityId, body, function (result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no such facility " + facilityId);
         res.end();
+    });
 };

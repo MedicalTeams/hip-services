@@ -28,7 +28,7 @@ exports.handleWithConnection = function(handleStatement) {
             console.error(err);
 
         console.log("connection aquired)");
-        handleStatement(connection, function() {
+        return handleStatement(connection, function() {
             connection.release();
             console.log("connection released");
         })
