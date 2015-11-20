@@ -6,11 +6,11 @@ var Connection = require('tedious').Connection;
 console.log('connecting to ' +
     process.env.SQLAZURECONNSTR_username + '@' + process.env.SQLAZURECONNSTR_host + ':' + process.env.SQLAZURECONNSTR_database)
 var config = {
-    userName: process.env.SQLAZURECONNSTR_username,
-    password: process.env.SQLAZURECONNSTR_password,
-    server: process.env.SQLAZURECONNSTR_host,
+    userName: 'app_usr',
+    password: '#OMGitburns!',
+    server: 'mti-dev-db.database.windows.net',
     // When you connect to Azure SQL Database, you need these next options.
-    options: {encrypt: true, database: process.env.SQLAZURECONNSTR_database}
+    options: {encrypt: true, database: 'clinic'}
 };
 var connection;
 connection = new Connection(config);
