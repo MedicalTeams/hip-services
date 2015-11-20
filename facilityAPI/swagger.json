@@ -203,6 +203,71 @@
         }
       }
     },
+    "/settlements": {
+      "get": {
+        "summary": "",
+        "description": "The Settlements endpoint returns the list of all MTI Settlements that are currently registered with the API.",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "getAllSettlements",
+        "responses": {
+          "200": {
+            "description": "settlements response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/settlement"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+    "/settlements/{settlement}/facilities": {
+      "get": {
+        "summary": "Settlement facilities",
+        "description": "Returns the list of all MTI Facilities for the Settlement that are currently registered with the API.",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "getFacilitiesBySettlement",
+        "parameters": [
+          {
+            "name": "settlement",
+            "in": "path",
+            "description": "Name of settlement to fetch",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "facilities response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/facility"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
     "/citizenships": {
       "get": {
         "summary": "Citizenship Lookup List",
@@ -429,6 +494,27 @@
         },
         "region": {
           "type": "string"
+        }
+      }
+    },
+    "settlement": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "facilityCount": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },

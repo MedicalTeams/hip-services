@@ -61,6 +61,82 @@ exports.getAllFacilities = function (settlement, cb) {
 
 }
 
+exports.getFacilitiesBySettlement = function (settlement, cb) {
+
+    var facilities = [];
+    var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
+        " where setlmt = @settlement order by user_intrfc_sort_ord", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+        }
+        else {
+            console.log("fetched facilities " + JSON.stringify(facilities))
+            cb(facilities);
+        }
+    });
+
+    request.on('row', function (columns) {
+        console.log("found facility " + columns[1].value)
+        var facility = {};
+        facility.id = columns[0].value;
+        facility.name = columns[1].value;
+        facility.settlement = columns[2].value;
+        facility.country = columns[3].value;
+        facility.region = columns[4].value;
+        facilities.push(facility);
+        console.log(JSON.stringify(facility));
+    });
+
+    request.addParameter('settlement', TYPES.NVarChar, decodeURIComponent(settlement));
+
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
+
+}
+
+exports.getAllSettlements = function (cb) {
+
+    var settlements = [];
+    var request = new Request("SELECT setlmt, cntry, rgn, count(faclty_id) numfaclty from vw_lkup_faclty" +
+        " group by setlmt, cntry, rgn", function (err) {
+        if (err) {
+            console.log("the error: " + err);
+        }
+        else {
+            console.log("fetched settlements " + JSON.stringify(settlements))
+            cb(settlements);
+        }
+    });
+
+    request.on('row', function (columns) {
+        console.log("found settlement " + columns[1].value)
+        var settlement = {};
+        settlement.name = columns[0].value;
+        settlement.country = columns[1].value;
+        settlement.region = columns[2].value;
+        settlement.facilityCount = columns[3].value;
+        settlements.push(settlement);
+        console.log(JSON.stringify(settlement));
+    });
+
+    connection.reset(function (err) {
+        if (err) {
+            console.log("reset error: " + err);
+            return "fail"
+        }
+        else {
+            connection.execSql(request);
+        }
+    });
+
+}
 
 exports.getAllCitizenships = function (cb) {
 
@@ -356,6 +432,11 @@ exports.postVisitsAtFacility = function (facilityId, body) {
         var visit = visit;
         visit.facility = facilityId;
         visit.visitId = Date.now();
+
+        // Populated fields that the mapping solution needs to have even if they are not relevant for this Visit.
+        visit.injuryLocation = visit.injuryLocation || 0;
+        visit.stiContactsTreated = visit.stiContactsTreated || 0;
+        
         console.log("attempt to insert " + visit.visitId);
 
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
