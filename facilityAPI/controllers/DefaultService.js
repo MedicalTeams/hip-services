@@ -2,6 +2,9 @@
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var Connection = require('tedious').Connection;
+
+console.log('connecting to ' +
+    process.env.SQLAZURECONNSTR_username + '@' + process.env.SQLAZURECONNSTR_host + ':' + process.env.SQLAZURECONNSTR_database)
 var config = {
     userName: process.env.SQLAZURECONNSTR_username,
     password: process.env.SQLAZURECONNSTR_password,
