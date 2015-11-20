@@ -51,6 +51,20 @@ module.exports.getAllCitizenships = function getAllCitizenships (req, res, next)
 };
 
 
+module.exports.getAllInjuryLocations = function getAllInjuryLocations (req, res, next) {
+    Default.getAllInjuryLocations(function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no injury locations found");
+        res.end();
+    });
+};
+
 module.exports.getAllDiagnosis = function getAllDiagnosis (req, res, next) {
     Default.getAllDiagnosis(function(result) {
         if (typeof result !== 'undefined') {

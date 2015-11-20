@@ -2,6 +2,8 @@
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var Connection = require('tedious').Connection;
+var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
+
 
 console.log('connecting to ' +
     process.env.SQLAZURECONNSTR_username + '@' + process.env.SQLAZURECONNSTR_host + ':' + process.env.SQLAZURECONNSTR_database)
@@ -175,6 +177,37 @@ exports.getAllCitizenships = function (cb) {
     });
 
 }
+
+exports.getAllInjuryLocations = function (cb) {
+
+    handleWithConnection( function(connection, poolcb) {
+        var result = [];
+        var request = new Request("SELECT splmtl_diag_cat_id, splmtl_diag_cat, diag_id from vw_lkup_injury_loc_diag" +
+            " order by user_intrfc_sort_ord", function (err) {
+            if (err) {
+                console.log("the error: " + err);
+            }
+            else {
+                console.log("fetched injurylocation " + JSON.stringify(result))
+                cb(result);
+                poolcb();
+            }
+        });
+
+        request.on('row', function (columns) {
+            console.log("found injury location " + columns[1].value)
+            var entry = {};
+            entry.id = columns[0].value;
+            entry.name = columns[1].value;
+            entry.diagnosis = columns[2].value;
+            result.push(entry);
+            console.log(JSON.stringify(entry));
+        });
+
+        connection.execSql(request);
+    });
+}
+
 
 exports.getAllDiagnosis = function (cb) {
 

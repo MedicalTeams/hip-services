@@ -1,4 +1,4 @@
-var pool = require('./connectionpool.js');
+var pool = require('./../../utils/connectionpool.js');
 
 //acquire a connection
 pool.acquire(function (err, connection) {

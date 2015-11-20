@@ -296,6 +296,34 @@
         }
       }
     },
+    "/injurylocations": {
+      "get": {
+        "summary": "Injury Location Lookup List",
+        "description": "The injurylocation endpoint returns the list of all injury locations that are currently registered with the API.",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "getAllInjuryLocations",
+        "responses": {
+          "200": {
+            "description": "injury locations response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/injurylocation"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
     "/diagnosis": {
       "get": {
         "summary": "Diagnosis Lookup List",
@@ -530,6 +558,22 @@
           "format": "int64"
         },
         "level": {
+          "type": "string"
+        }
+      }
+    },
+    "injurylocation": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
           "type": "string"
         }
       }
