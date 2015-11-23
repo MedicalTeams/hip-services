@@ -243,6 +243,20 @@ module.exports.getAllDevices = function getAllDiagnosis (req, res, next) {
     });
 };
 
+module.exports.getDevice = function getDevice (req, res, next) {
+    var uuid = req.swagger.params['uuid'].value;
+    Default.getDeviceByUUID(uuid, function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no such device " + uuid);
+        res.end();
+    });
+};
 module.exports.putDevice = function putDevice (req, res, next) {
     var body = req.swagger.params['body'].value;
     var uuid = req.swagger.params['uuid'].value;

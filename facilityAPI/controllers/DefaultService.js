@@ -403,7 +403,7 @@ exports.getAllDevices = function (cb) {
 
 exports.getDeviceByUUID = function (uuid, cb) {
     handleWithConnection(function (connection, poolcb) {
-        var result = {};
+        var result;
         var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry" +
             " where mac_addr = @uuid", function (err) {
             if (err) {
@@ -418,6 +418,7 @@ exports.getDeviceByUUID = function (uuid, cb) {
         request.addParameter('uuid', TYPES.NVarChar, uuid);
 
         request.on('row', function (columns) {
+            result = {};
             console.log("found device " + columns[1].value)
             result.uuid = columns[0].value;
             result.applicationVersion = columns[1].value;
@@ -433,7 +434,7 @@ exports.putDevice = function (uuid, body, cb) {
 
     console.log("put: " + JSON.stringify(body));
     exports.getDeviceByUUID(uuid, function(result){
-        if (typeof result.uuid !== 'undefined') {
+        if (typeof result !== 'undefined') {
             updateDevice(uuid, body, cb);
         }
         else {
@@ -452,7 +453,7 @@ var insertDevice = function (uuid, body, cb){
         var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
             " VALUES (11, @uuid, @applicationVersion, @description, 'I');", function (err) {
             if (err) {
-                console.log("the error: " + err);
+                console.log("Error inserting device " + JSON.stringify(device) + ": " + err);
                 return "fail"
             }
             else {
@@ -460,12 +461,12 @@ var insertDevice = function (uuid, body, cb){
                 cb(device);
             }
         });
+        request.addParameter('uuid', TYPES.VarChar, device.uuid);
+        request.addParameter('applicationVersion', TYPES.VarChar, device.appVersion);
+        request.addParameter('description', TYPES.VarChar, device.description);
 
-        request.addParameter('uuid', TYPES.NVarChar, device.uuid);
-        request.addParameter('applicationVersion', TYPES.NVarChar, device.appVersion);
-        request.addParameter('description', TYPES.NVarChar, device.description);
 
-
+        console.log(JSON.stringify(request));
         connection.execSql(request);
 
     });

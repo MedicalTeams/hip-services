@@ -40,6 +40,41 @@
       }
     },
     "/devices/{uuid}": {
+      "get": {
+        "summary": "Get registered device",
+        "description": "Returns the specified device if registered with the HIP app.",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "getDevice",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The identity for the device.  Probably a MAC address or serial number.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "devices response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/device"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      },
       "put": {
         "summary": "put device",
         "description": "Adds or updates information about a device",
@@ -52,7 +87,7 @@
           {
             "name": "uuid",
             "in": "path",
-            "description": "The identity for the device.  Almost certainly this is a MAC address.",
+            "description": "The identity for the device.  Probably a MAC address or serial number.",
             "required": true,
             "type": "string"
           },
@@ -635,7 +670,6 @@
     "device": {
       "type": "object",
       "required": [
-        "uuid",
         "appVersion"
       ],
       "properties": {
