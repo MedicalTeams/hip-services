@@ -227,3 +227,34 @@ module.exports.postVisitsAtFacility = function postVisitsAtFacility (req, res, n
         res.end();
     });
 };
+
+
+module.exports.getAllDevices = function getAllDiagnosis (req, res, next) {
+    Default.getAllDevices(function(result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no devices found");
+        res.end();
+    });
+};
+
+module.exports.putDevice = function putDevice (req, res, next) {
+    var body = req.swagger.params['body'].value;
+    var uuid = req.swagger.params['uuid'].value;
+
+    var result = Default.putDevice(uuid, body, function (result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("failed to put device " + JSON.stringify(body));
+        res.end();
+    });
+};

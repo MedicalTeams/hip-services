@@ -230,7 +230,7 @@ exports.getDiagnosisById = function (diagnosisId, cb) {
 exports.getSupplementalById = function (supplementalId, cb) {
     handleWithConnection(function (connection, poolcb) {
         var result = {};
-        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_all_splmtl_diag" +
+        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where splmtl_diag_id = @supplementalId order by user_intrfc_sort_ord", function (err) {
             if (err) {
                 console.log("the error: " + err);
@@ -261,7 +261,7 @@ exports.getSupplementalById = function (supplementalId, cb) {
 exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
     handleWithConnection(function (connection, poolcb) {
         var result = [];
-        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_all_splmtl_diag" +
+        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where diag_id = @diagnosisId order by user_intrfc_sort_ord", function (err) {
 
             if (err) {
@@ -295,7 +295,7 @@ exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
 exports.getAllSupplementals = function (cb) {
     handleWithConnection(function (connection, poolcb) {
         var result = [];
-        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_all_splmtl_diag" +
+        var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " order by user_intrfc_sort_ord", function (err) {
             if (err) {
                 console.log("the error: " + err);
@@ -371,6 +371,137 @@ exports.getVisitsByFacility = function (facilityId) {
 
 }
 
+exports.getAllDevices = function (cb) {
+    handleWithConnection(function (connection, poolcb) {
+        var result = [];
+        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry", function (err) {
+            if (err) {
+                console.log("the error: " + err);
+            }
+            else {
+                console.log("fetched devices " + JSON.stringify(result));
+                cb(result);
+                poolcb();
+            }
+        });
+
+        request.on('row', function (columns) {
+            console.log("found supplemental " + columns[1].value);
+            var entry = {};
+            entry.uuid = columns[0].value;
+            entry.appVersion = columns[1].value;
+            entry.description = columns[2].value;
+            result.push(entry);
+            console.log(JSON.stringify(entry));
+        });
+
+        connection.execSql(request);
+
+    });
+
+}
+
+exports.getDeviceByUUID = function (uuid, cb) {
+    handleWithConnection(function (connection, poolcb) {
+        var result = {};
+        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry" +
+            " where mac_addr = @uuid", function (err) {
+            if (err) {
+                console.log("the error: " + err);
+            }
+            else {
+                console.log("fetched device " + JSON.stringify(result))
+                cb(result);
+                poolcb();
+            }
+        });
+        request.addParameter('uuid', TYPES.NVarChar, uuid);
+
+        request.on('row', function (columns) {
+            console.log("found device " + columns[1].value)
+            result.uuid = columns[0].value;
+            result.applicationVersion = columns[1].value;
+            result.description = columns[2].value;
+            console.log(JSON.stringify(result));
+        });
+
+        connection.execSql(request);
+    });
+}
+
+exports.putDevice = function (uuid, body, cb) {
+
+    console.log("put: " + JSON.stringify(body));
+    exports.getDeviceByUUID(uuid, function(result){
+        if (typeof result.uuid !== 'undefined') {
+            updateDevice(uuid, body, cb);
+        }
+        else {
+            insertDevice(uuid, body, cb);
+        }
+    });
+
+}
+
+var insertDevice = function (uuid, body, cb){
+    var device = body;
+    console.log("posting: " + JSON.stringify(device));
+    handleWithConnection(function (connection, poolcb) {
+        device.uuid = uuid;
+
+        var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
+            " VALUES (11, @uuid, @applicationVersion, @description, 'I');", function (err) {
+            if (err) {
+                console.log("the error: " + err);
+                return "fail"
+            }
+            else {
+                poolcb();
+                cb(device);
+            }
+        });
+
+        request.addParameter('uuid', TYPES.NVarChar, device.uuid);
+        request.addParameter('applicationVersion', TYPES.NVarChar, device.appVersion);
+        request.addParameter('description', TYPES.NVarChar, device.description);
+
+
+        connection.execSql(request);
+
+    });
+
+}
+
+
+var updateDevice = function (uuid, body, cb){
+    var device = body;
+    console.log("posting: " + JSON.stringify(device));
+    handleWithConnection(function (connection, poolcb) {
+        device.uuid = uuid;
+
+        var request = new Request("UPDATE faclty_hw_invtry " +
+            "set aplctn_vrsn = @applicationVersion, itm_descn = @description " +
+            " where mac_addr = @uuid ", function (err) {
+            if (err) {
+                console.log("the error: " + err);
+                return "fail"
+            }
+            else {
+                poolcb();
+                cb(device);
+            }
+        });
+        request.addParameter('uuid', TYPES.NVarChar, device.uuid);
+        request.addParameter('applicationVersion', TYPES.NVarChar, device.appVersion);
+        request.addParameter('description', TYPES.NVarChar, device.description);
+
+
+        connection.execSql(request);
+
+    });
+
+}
+
 exports.postVisitAtFacility = function (facilityId, body, cb) {
     handleWithConnection(function (connection, poolcb) {
         var visit = body;
@@ -399,7 +530,6 @@ exports.postVisitAtFacility = function (facilityId, body, cb) {
     });
 
 }
-
 
 var async = require('async');
 

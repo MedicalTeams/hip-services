@@ -11,6 +11,76 @@
   "host": "clinicwebapp.azurewebsites.net",
   "basePath": "/hip",
   "paths": {
+    "/devices": {
+      "get": {
+        "summary": "Get registered devices",
+        "description": "Returns an array devices that have registered the HIP app.",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "getAllDevices",
+        "responses": {
+          "200": {
+            "description": "devices response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/device"
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+    "/devices/{uuid}": {
+      "put": {
+        "summary": "put device",
+        "description": "Adds or updates information about a device",
+        "x-swagger-router-controller": "Default",
+        "tags": [
+          "Default"
+        ],
+        "operationId": "putDevice",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The identity for the device.  Almost certainly this is a MAC address.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/device"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "visit reference response",
+            "schema": {
+              "$ref": "#/definitions/device"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
     "/facilities/{facilityId}/visits": {
       "get": {
         "summary": "Get facility visits",
@@ -558,6 +628,24 @@
           "format": "int64"
         },
         "level": {
+          "type": "string"
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "required": [
+        "uuid",
+        "appVersion"
+      ],
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "appVersion": {
+          "type": "string"
+        },
+        "description": {
           "type": "string"
         }
       }
