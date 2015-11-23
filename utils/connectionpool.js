@@ -8,12 +8,14 @@ var poolConfig = {
 };
 
 var connectionConfig = {
-    userName: 'dbadmin',
-    password: 'password$1',
-    server: 'mti-dev-db.database.windows.net',
+    userName: process.env.SQLAZURECONNSTR_username,
+    password: process.env.SQLAZURECONNSTR_password,
+    server: process.env.SQLAZURECONNSTR_host,
     // Needed for Microsoft Azure
-    options: {encrypt: true, database: 'Clinic'}
+    options: {encrypt: true, database: process.env.SQLAZURECONNSTR_database}
 };
+
+console.log( "connecting to " + JSON.stringify(connectionConfig.server) );
 
 //create the pool
 var pool = new ConnectionPool(poolConfig, connectionConfig);
