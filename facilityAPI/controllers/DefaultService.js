@@ -408,6 +408,7 @@ exports.getDeviceByUUID = function (uuid, cb) {
             " where mac_addr = @uuid", function (err) {
             if (err) {
                 console.log("the error: " + err);
+                cb();
             }
             else {
                 console.log("fetched device " + JSON.stringify(result))
@@ -419,7 +420,7 @@ exports.getDeviceByUUID = function (uuid, cb) {
 
         request.on('row', function (columns) {
             result = {};
-            console.log("found device " + columns[1].value)
+            console.log("found device " + columns[1].value);
             result.uuid = columns[0].value;
             result.applicationVersion = columns[1].value;
             result.description = columns[2].value;
@@ -433,7 +434,7 @@ exports.getDeviceByUUID = function (uuid, cb) {
 exports.putDevice = function (uuid, body, cb) {
 
     console.log("put: " + JSON.stringify(body));
-    exports.getDeviceByUUID(uuid, function(result){
+    exports.getDeviceByUUID(uuid, function (result) {
         if (typeof result !== 'undefined') {
             updateDevice(uuid, body, cb);
         }
@@ -444,7 +445,7 @@ exports.putDevice = function (uuid, body, cb) {
 
 }
 
-var insertDevice = function (uuid, body, cb){
+var insertDevice = function (uuid, body, cb) {
     var device = body;
     console.log("posting: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
@@ -474,7 +475,7 @@ var insertDevice = function (uuid, body, cb){
 }
 
 
-var updateDevice = function (uuid, body, cb){
+var updateDevice = function (uuid, body, cb) {
     var device = body;
     console.log("posting: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
@@ -513,7 +514,7 @@ exports.postVisitAtFacility = function (facilityId, body, cb) {
             " VALUES (@visituuid, @visitjson);", function (err) {
             if (err) {
                 console.log("the error: " + err);
-                return "fail"
+                cb(visit.visitId, 400);
             }
             else {
                 poolcb();
@@ -522,12 +523,16 @@ exports.postVisitAtFacility = function (facilityId, body, cb) {
         });
         request.addParameter('visituuid', TYPES.NVarChar, visit.visitId);
         request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
-
-
         console.log("posting: " + JSON.stringify(visit));
 
-        connection.execSql(request);
-
+        exports.getDeviceByUUID (visit.deviceId, function (result) {
+            if (typeof result !== 'undefined' && result.status === 'A') {
+                connection.execSql(request);
+            }
+            else {
+                cb({"error": "fail - device is not registered"}, 400);
+            }
+        });
     });
 
 }
