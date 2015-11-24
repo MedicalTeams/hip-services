@@ -404,7 +404,7 @@ exports.getAllDevices = function (cb) {
 exports.getDeviceByUUID = function (uuid, cb) {
     handleWithConnection(function (connection, poolcb) {
         var result;
-        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry" +
+        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn, hw_stat from faclty_hw_invtry" +
             " where mac_addr = @uuid", function (err) {
             if (err) {
                 console.log("the error: " + err);
@@ -420,11 +420,11 @@ exports.getDeviceByUUID = function (uuid, cb) {
 
         request.on('row', function (columns) {
             result = {};
-            console.log("found device " + columns[1].value);
             result.uuid = columns[0].value;
             result.applicationVersion = columns[1].value;
             result.description = columns[2].value;
-            console.log(JSON.stringify(result));
+            result.status = columns[3].value;
+            console.log("found device " + JSON.stringify(result));
         });
 
         connection.execSql(request);
