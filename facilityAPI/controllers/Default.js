@@ -194,23 +194,26 @@ module.exports.getVisitsByFacility = function getVisitsByFacility(req, res, next
         res.end();
 };
 
+var handleResults = function(result, error, res){
+    if (typeof error === 'undefined' && typeof result !== 'undefined') {
+        console.log(JSON.stringify(result))
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(result || {}, null, 2));
+    }
+    else {
+        // Something bad happened
+        console.log(JSON.stringify(error));
+        res.writeHead(error, JSON.stringify(result), {'Content-Type': 'application/json'});
+        res.end();
+    }
+}
+
 module.exports.postVisitAtFacility = function postVisitAtFacility(req, res, next) {
     var facilityId = req.swagger.params['facilityId'].value;
     var body = req.swagger.params['body'].value;
 
-
-    var result = Default.postVisitAtFacility(facilityId, body, function (result, err) {
-        if (typeof err === 'undefined' && typeof result !== 'undefined') {
-            console.log(JSON.stringify(result))
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(result || {}, null, 2));
-        }
-        else {
-            // Something bad happened
-            console.log(JSON.stringify(err));
-            res.writeHead(err, JSON.stringify(result), {'Content-Type': 'application/json'});
-            res.end();
-        }
+    var result = Default.postVisitAtFacility(facilityId, body, function(result, error){
+        handleResults(result, error, res);
     });
 };
 
@@ -218,16 +221,8 @@ module.exports.postVisitsAtFacility = function postVisitsAtFacility(req, res, ne
     var facilityId = req.swagger.params['facilityId'].value;
     var body = req.swagger.params['body'].value;
 
-
-    var result = Default.postVisitsAtFacility(facilityId, body, function (result) {
-        if (typeof result !== 'undefined') {
-            console.log(JSON.stringify(result))
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(result || {}, null, 2));
-        }
-        else
-            console.log("no such facility " + facilityId);
-        res.end();
+    var result = Default.postVisitsAtFacility(facilityId, body, function(result, error){
+        handleResults(result, error, res);
     });
 };
 
