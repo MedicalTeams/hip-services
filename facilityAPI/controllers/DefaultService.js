@@ -1,7 +1,6 @@
 'use strict';
 var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
-var Connection = require('tedious').Connection;
 var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
 
 exports.getAllFacilities = function (settlement, cb) {
@@ -10,13 +9,13 @@ exports.getAllFacilities = function (settlement, cb) {
         var facilities = [];
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched facilities " + JSON.stringify(facilities))
                 cb(facilities);
-                poolcb();
             }
         });
 
@@ -43,13 +42,13 @@ exports.getFacilitiesBySettlement = function (settlement, cb) {
         var facilities = [];
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " where setlmt = @settlement order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched facilities " + JSON.stringify(facilities))
                 cb(facilities);
-                poolcb();
             }
         });
 
@@ -77,13 +76,13 @@ exports.getAllSettlements = function (cb) {
         var settlements = [];
         var request = new Request("SELECT setlmt, cntry, rgn, count(faclty_id) numfaclty from vw_lkup_faclty" +
             " group by setlmt, cntry, rgn", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched settlements " + JSON.stringify(settlements))
                 cb(settlements);
-                poolcb();
             }
         });
 
@@ -108,13 +107,13 @@ exports.getAllCitizenships = function (cb) {
         var result = [];
         var request = new Request("SELECT bnfcry_id, bnfcry from vw_lkup_bnfcry" +
             " order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched citizenship " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
 
@@ -139,13 +138,13 @@ exports.getAllInjuryLocations = function (cb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_cat_id, splmtl_diag_cat, diag_id from vw_lkup_injury_loc_diag" +
             " order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched injurylocation " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
 
@@ -170,13 +169,13 @@ exports.getAllDiagnosis = function (cb) {
         var result = [];
         var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
             " order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched diagnosis " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
 
@@ -202,13 +201,13 @@ exports.getDiagnosisById = function (diagnosisId, cb) {
         var result = {};
         var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
             " where diag_id = @diagnosisId", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched diagnosis " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
         request.addParameter('diagnosisId', TYPES.Int, diagnosisId);
@@ -232,13 +231,13 @@ exports.getSupplementalById = function (supplementalId, cb) {
         var result = {};
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where splmtl_diag_id = @supplementalId order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched diagnosis " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
         request.addParameter('supplementalId', TYPES.Int, supplementalId);
@@ -263,14 +262,13 @@ exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where diag_id = @diagnosisId order by user_intrfc_sort_ord", function (err) {
-
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched supplementals " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
         request.addParameter('diagnosisId', TYPES.Int, diagnosisId);
@@ -297,13 +295,13 @@ exports.getAllSupplementals = function (cb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " order by user_intrfc_sort_ord", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched supplementals " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
 
@@ -329,13 +327,13 @@ exports.getFacilityById = function (facilityId, cb) {
         var result = {};
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " where faclty_id = @facilityId", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched facilities " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
         request.addParameter('facilityId', TYPES.Int, facilityId);
@@ -375,13 +373,13 @@ exports.getAllDevices = function (cb) {
     handleWithConnection(function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
             }
             else {
                 console.log("fetched devices " + JSON.stringify(result));
                 cb(result);
-                poolcb();
             }
         });
 
@@ -404,8 +402,9 @@ exports.getAllDevices = function (cb) {
 exports.getDeviceByUUID = function (uuid, cb) {
     handleWithConnection(function (connection, poolcb) {
         var result;
-        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry" +
+        var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn, hw_stat from faclty_hw_invtry" +
             " where mac_addr = @uuid", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
                 cb();
@@ -413,7 +412,6 @@ exports.getDeviceByUUID = function (uuid, cb) {
             else {
                 console.log("fetched device " + JSON.stringify(result))
                 cb(result);
-                poolcb();
             }
         });
         request.addParameter('uuid', TYPES.NVarChar, uuid);
@@ -424,6 +422,7 @@ exports.getDeviceByUUID = function (uuid, cb) {
             result.uuid = columns[0].value;
             result.applicationVersion = columns[1].value;
             result.description = columns[2].value;
+            result.status = columns[3].value;
             console.log(JSON.stringify(result));
         });
 
@@ -447,18 +446,18 @@ exports.putDevice = function (uuid, body, cb) {
 
 var insertDevice = function (uuid, body, cb) {
     var device = body;
-    console.log("posting: " + JSON.stringify(device));
+    console.log("inserting: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
         device.uuid = uuid;
 
         var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
             " VALUES (11, @uuid, @applicationVersion, @description, 'I');", function (err) {
+            poolcb();
             if (err) {
                 console.log("Error inserting device " + JSON.stringify(device) + ": " + err);
                 return "fail"
             }
             else {
-                poolcb();
                 cb(device);
             }
         });
@@ -477,19 +476,19 @@ var insertDevice = function (uuid, body, cb) {
 
 var updateDevice = function (uuid, body, cb) {
     var device = body;
-    console.log("posting: " + JSON.stringify(device));
+    console.log("updating: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
         device.uuid = uuid;
 
         var request = new Request("UPDATE faclty_hw_invtry " +
             "set aplctn_vrsn = @applicationVersion, itm_descn = @description " +
             " where mac_addr = @uuid ", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
                 return "fail"
             }
             else {
-                poolcb();
                 cb(device);
             }
         });
@@ -508,16 +507,20 @@ exports.postVisitAtFacility = function (facilityId, body, cb) {
     handleWithConnection(function (connection, poolcb) {
         var visit = body;
         visit.facility = facilityId;
-        visit.visitId = Date.now();
+        visit.visitId = visit.deviceId + "_" + visit.visitDate;
+
+        // Populated fields that the mapping solution needs to have even if they are not relevant for this Visit.
+        visit.injuryLocation = visit.injuryLocation || 0;
+        visit.stiContactsTreated = visit.stiContactsTreated || 0;
 
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
             " VALUES (@visituuid, @visitjson);", function (err) {
+            poolcb();
             if (err) {
                 console.log("the error: " + err);
                 cb(visit.visitId, 400);
             }
             else {
-                poolcb();
                 cb(visit.visitId);
             }
         });
@@ -542,46 +545,24 @@ var async = require('async');
 exports.postVisitsAtFacility = function (facilityId, body, cb) {
     var visits = body;
     var count = 0;
+
+    var rollupresults = {successfulVisits:[], failedVisits:[]};
     async.eachSeries(visits, function (visit, visitDone) {
         var visit = visit;
-        handleWithConnection(function (connection, poolcb) {
-            console.log("handling visit " + JSON.stringify(visit));
-            visit.facility = facilityId;
-            visit.visitId = Date.now();
-
-            // Populated fields that the mapping solution needs to have even if they are not relevant for this Visit.
-            visit.injuryLocation = visit.injuryLocation || 0;
-            visit.stiContactsTreated = visit.stiContactsTreated || 0;
-
-            console.log("attempt to insert " + visit.visitId);
-
-            var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
-                " VALUES (@visituuid, @visitjson);", function (err) {
-                if (err) {
-                    console.log("insert error: " + err);
-                    cb("fail");
-                }
-                else {
-                    console.log("insert complete");
-                    count++;
-                    visitDone();
-                    poolcb();
-
-                }
-            });
-            request.addParameter('visituuid', TYPES.NVarChar, visit.visitId);
-            request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
-            connection.execSql(request);
+        exports.postVisitAtFacility(visit.facility, visit, function(result, error){
+            if (error) {
+                rollupresults.failedVisits.push(error);
+            } else {
+                rollupresults.successfulVisits.push(result);
+            }
+            visitDone();
         });
     }, function (err) {
-        // if any of the visit inserts produced an error, err would equal that error
         if (err) {
-            // ToDo talk with Mick about what he would like to happen in case of error.
-            console.log('One or more visit failed to be added');
-            cb("fail");
-        } else {
-            console.log('All visits have been added');
-            cb(count);
+            cb({"error": "failed to POST visits"}, 400);
+        }
+        else {
+            cb(rollupresults);
         }
     });
 
