@@ -194,6 +194,22 @@ module.exports.getVisitsByFacility = function getVisitsByFacility(req, res, next
         res.end();
 };
 
+
+module.exports.getVisit = function getVisitsByFacility(req, res, next) {
+    var visitKey = req.swagger.params['visitKey'].value;
+    var result = Default.getVisit(visitKey, function (result) {
+        if (typeof result !== 'undefined') {
+            console.log(result)
+            res.setHeader('Content-Type', 'application/json');
+            res.end(result || {}, null, 2);
+        }
+        else
+            console.log("no such visit " + visitKey);
+        res.end();
+    });
+};
+
+
 var handleResults = function(result, error, res){
     if (typeof error === 'undefined' && typeof result !== 'undefined') {
         console.log(JSON.stringify(result))

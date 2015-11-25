@@ -352,6 +352,7 @@ exports.getFacilityById = function (facilityId, cb) {
     });
 }
 
+
 exports.getVisitsByFacility = function (facilityId) {
     handleWithConnection(function (connection, poolcb) {
         var examples = {};
@@ -367,6 +368,34 @@ exports.getVisitsByFacility = function (facilityId) {
             return examples[Object.keys(examples)[0]];
     });
 
+}
+
+
+exports.getVisit = function (visitKey, cb) {
+    handleWithConnection(function (connection, poolcb) {
+        var result = {};
+        var request = new Request("SELECT  visit_json FROM raw_visit" +
+            " where visit_uuid = @visitKey", function (err) {
+            poolcb();
+            if (err) {
+                console.log("the error: " + err);
+                cb(result, err);
+            }
+            else {
+                console.log("fetched visits " + JSON.stringify(result))
+                cb(result);
+            }
+        });
+        request.addParameter('visitKey', TYPES.NVarChar, visitKey);
+
+        request.on('row', function (columns) {
+            console.log("found visit " + visitKey)
+            result = columns[0].value;
+            console.log(result);
+        });
+
+        connection.execSql(request);
+    });
 }
 
 exports.getAllDevices = function (cb) {
@@ -448,9 +477,9 @@ var insertDevice = function (uuid, body, cb) {
     console.log("inserting: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
         device.uuid = uuid;
-
+        var DEFAULT_FACILITY_ID = 41;
         var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
-            " VALUES (11, @uuid, @applicationVersion, @description, 'I');", function (err) {
+            " VALUES (" + DEFAULT_FACILITY_ID + ", @uuid, @applicationVersion, @description, 'I');", function (err) {
             poolcb();
             if (err) {
                 console.log("Error inserting device " + JSON.stringify(device) + ": " + err);
@@ -480,7 +509,7 @@ var updateDevice = function (uuid, body, cb) {
         device.uuid = uuid;
 
         var request = new Request("UPDATE faclty_hw_invtry " +
-            "set aplctn_vrsn = @applicationVersion, itm_descn = @description " +
+            " set aplctn_vrsn = @applicationVersion, itm_descn = @description " +
             " where mac_addr = @uuid ", function (err) {
             poolcb();
             if (err) {
@@ -495,35 +524,36 @@ var updateDevice = function (uuid, body, cb) {
         request.addParameter('applicationVersion', TYPES.NVarChar, device.appVersion);
         request.addParameter('description', TYPES.NVarChar, device.description);
 
-
         connection.execSql(request);
 
     });
 
 }
 
+var b64 = function (input) {
+    var b = new Buffer(JSON.stringify(input));
+    return b.toString('base64');
+}
 exports.postVisitAtFacility = function (facilityId, body, cb) {
     handleWithConnection(function (connection, poolcb) {
         var visit = body;
         visit.facility = facilityId;
-        visit.visitId = visit.deviceId + "_" + visit.visitDate;
-
-        // Populated fields that the mapping solution needs to have even if they are not relevant for this Visit.
-        visit.injuryLocation = visit.injuryLocation || 0;
-        visit.stiContactsTreated = visit.stiContactsTreated || 0;
+        visit.key = b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
+        visit.injuryLocation = visit.injuryLocation || 0;  // post processing requires this to be non-null
+        visit.stiContactsTreated = visit.stiContactsTreated || 0;  // post processing requires this to be non-null
 
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
             " VALUES (@visituuid, @visitjson);", function (err) {
             poolcb();
             if (err) {
                 console.log("the error: " + err);
-                cb(visit.visitId, 400);
+                cb(visit.key, [400, err]);
             }
             else {
-                cb(visit.visitId);
+                cb(visit.key);
             }
         });
-        request.addParameter('visituuid', TYPES.NVarChar, visit.visitId);
+        request.addParameter('visituuid', TYPES.NVarChar, visit.key);
         request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
         console.log("posting: " + JSON.stringify(visit));
 
@@ -545,12 +575,12 @@ exports.postVisitsAtFacility = function (facilityId, body, cb) {
     var visits = body;
     var count = 0;
 
-    var rollupresults = {successfulVisits:[], failedVisits:[]};
+    var rollupresults = {successfulVisits: [], failedVisits: []};
     async.eachSeries(visits, function (visit, visitDone) {
         var visit = visit;
-        exports.postVisitAtFacility(visit.facility, visit, function(result, error){
+        exports.postVisitAtFacility(facilityId, visit, function (result, error) {
             if (error) {
-                rollupresults.failedVisits.push(error);
+                rollupresults.failedVisits.push({key: result, error: error});
             } else {
                 rollupresults.successfulVisits.push(result);
             }

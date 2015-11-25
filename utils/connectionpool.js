@@ -28,7 +28,6 @@ exports.handleWithConnection = function(handleStatement) {
     pool.acquire( function (err, connection) {
         if (err)
             console.error(err);
-        console.log("connection aquired for " + JSON.stringify(connection));
         return handleStatement(connection, function() {
             var releaseinfo = connection.release();
         })
