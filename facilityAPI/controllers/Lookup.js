@@ -1,6 +1,7 @@
 'use strict';
 var url = require('url');
 var Lookup = require('./LookupService');
+var Facility = require('./FacilityService');
 var common = require('./Common');
 var handleResults = common.handleResults;
 
@@ -130,6 +131,21 @@ module.exports.getSupplementalsByDiagnosis = function getSupplementalsByDiagnosi
         }
         else
             console.log("no such diagnosis " + diagnosisId);
+        res.end();
+    });
+};
+
+
+module.exports.getFacilitiesBySettlement = function getFacilitiesBySettlement(req, res, next) {
+    var settlement = req.swagger.params['settlement'].value;
+    Facility.getFacilitiesBySettlement(settlement, function (result) {
+        if (typeof result !== 'undefined') {
+            console.log(JSON.stringify(result))
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(result || {}, null, 2));
+        }
+        else
+            console.log("no such settlement " + settlement);
         res.end();
     });
 };

@@ -7,7 +7,7 @@ var handleResults = common.handleResults;
 module.exports.getAllFacilities = function getAllFacilities(req, res, next) {
     var settlement = req.swagger.params['settlement'].value;
 
-    Facility.getAllFacilities(settlement, function (result) {
+    var callback = function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -17,21 +17,13 @@ module.exports.getAllFacilities = function getAllFacilities(req, res, next) {
         else
             console.log("no facilities found");
         res.end();
-    });
-};
+    };
 
-module.exports.getFacilitiesBySettlement = function getFacilitiesBySettlement(req, res, next) {
-    var settlement = req.swagger.params['settlement'].value;
-    Facility.getFacilitiesBySettlement(settlement, function (result) {
-        if (typeof result !== 'undefined') {
-            console.log(JSON.stringify(result))
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(result || {}, null, 2));
-        }
-        else
-            console.log("no such settlement " + settlement);
-        res.end();
-    });
+    if (typeof settlement !== 'undefined')
+        Facility.getFacilitiesBySettlement(settlement, callback);
+    else
+        Facility.getAllFacilities(callback);
+
 };
 
 module.exports.getFacilityById = function getFacilityById(req, res, next) {

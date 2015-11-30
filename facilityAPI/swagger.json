@@ -292,8 +292,7 @@
             "in": "query",
             "description": "ID of a settlement.  Will filter facilities by that settlement.",
             "required": false,
-            "type": "integer",
-            "format": "int64"
+            "type": "string"
           }
         ],
         "responses": {

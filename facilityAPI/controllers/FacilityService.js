@@ -4,7 +4,7 @@ var TYPES = require('tedious').TYPES;
 var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
 var Device = require('./DeviceService');
 
-exports.getAllFacilities = function (settlement, cb) {
+exports.getAllFacilities = function (cb) {
 
     return handleWithConnection(function (connection, poolcb) {
         var facilities = [];
@@ -35,40 +35,6 @@ exports.getAllFacilities = function (settlement, cb) {
         connection.execSql(request);
     });
 
-}
-
-exports.getFacilitiesBySettlement = function (settlement, cb) {
-
-    handleWithConnection(function (connection, poolcb) {
-        var facilities = [];
-        var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
-            " where setlmt = @settlement order by user_intrfc_sort_ord", function (err) {
-            poolcb();
-            if (err) {
-                console.log("the error: " + err);
-            }
-            else {
-                console.log("fetched facilities " + JSON.stringify(facilities))
-                cb(facilities);
-            }
-        });
-
-        request.on('row', function (columns) {
-            console.log("found facility " + columns[1].value)
-            var facility = {};
-            facility.id = columns[0].value;
-            facility.name = columns[1].value;
-            facility.settlement = columns[2].value;
-            facility.country = columns[3].value;
-            facility.region = columns[4].value;
-            facilities.push(facility);
-            console.log(JSON.stringify(facility));
-        });
-
-        request.addParameter('settlement', TYPES.NVarChar, decodeURIComponent(settlement));
-
-        connection.execSql(request);
-    });
 }
 
 
@@ -218,4 +184,39 @@ exports.postVisitsAtFacility = function (facilityId, body, cb) {
         }
     });
 
+}
+
+
+exports.getFacilitiesBySettlement = function (settlement, cb) {
+
+    handleWithConnection(function (connection, poolcb) {
+        var facilities = [];
+        var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
+            " where setlmt = @settlement order by user_intrfc_sort_ord", function (err) {
+            poolcb();
+            if (err) {
+                console.log("the error: " + err);
+            }
+            else {
+                console.log("fetched facilities " + JSON.stringify(facilities))
+                cb(facilities);
+            }
+        });
+
+        request.on('row', function (columns) {
+            console.log("found facility " + columns[1].value)
+            var facility = {};
+            facility.id = columns[0].value;
+            facility.name = columns[1].value;
+            facility.settlement = columns[2].value;
+            facility.country = columns[3].value;
+            facility.region = columns[4].value;
+            facilities.push(facility);
+            console.log(JSON.stringify(facility));
+        });
+
+        request.addParameter('settlement', TYPES.NVarChar, decodeURIComponent(settlement));
+
+        connection.execSql(request);
+    });
 }
