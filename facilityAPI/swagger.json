@@ -15,9 +15,9 @@
       "get": {
         "summary": "Get registered devices",
         "description": "Returns an array devices that have registered the HIP app.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Device",
         "tags": [
-          "Default"
+          "Device"
         ],
         "operationId": "getAllDevices",
         "responses": {
@@ -43,9 +43,9 @@
       "get": {
         "summary": "Get registered device",
         "description": "Returns the specified device if registered with the HIP app.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Device",
         "tags": [
-          "Default"
+          "Device"
         ],
         "operationId": "getDevice",
         "parameters": [
@@ -78,9 +78,9 @@
       "put": {
         "summary": "put device",
         "description": "Adds or updates information about a device",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Device",
         "tags": [
-          "Default"
+          "Device"
         ],
         "operationId": "putDevice",
         "parameters": [
@@ -120,9 +120,9 @@
       "get": {
         "summary": "Get facility visits",
         "description": "Returns an array of links to patient visits to the specified facility",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "getVisitsByFacility",
         "parameters": [
@@ -153,9 +153,9 @@
       "post": {
         "summary": "Add visit",
         "description": "Adds a new patient Visit for the facility",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "postVisitAtFacility",
         "parameters": [
@@ -196,9 +196,9 @@
       "post": {
         "summary": "Upload visits",
         "description": "Upload an array of visits.  This operation will add them all.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "postVisitsAtFacility",
         "parameters": [
@@ -239,9 +239,9 @@
       "get": {
         "summary": "get Visit",
         "description": "Returns a visit based on a single visit Key",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "getVisit",
         "parameters": [
@@ -281,9 +281,9 @@
       "get": {
         "summary": "",
         "description": "The Facilities endpoint returns the list of all MTI Facilities that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "getAllFacilities",
         "parameters": [
@@ -319,9 +319,9 @@
       "get": {
         "summary": "",
         "description": "Returns a facility based on a single ID",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Facility",
         "tags": [
-          "Default"
+          "Facility"
         ],
         "operationId": "getFacilityById",
         "parameters": [
@@ -354,9 +354,9 @@
       "get": {
         "summary": "",
         "description": "The Settlements endpoint returns the list of all MTI Settlements that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getAllSettlements",
         "responses": {
@@ -382,9 +382,9 @@
       "get": {
         "summary": "Settlement facilities",
         "description": "Returns the list of all MTI Facilities for the Settlement that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getFacilitiesBySettlement",
         "parameters": [
@@ -419,9 +419,9 @@
       "get": {
         "summary": "Citizenship Lookup List",
         "description": "The Citizenship endpoint returns the list of all Citizenships that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getAllCitizenships",
         "responses": {
@@ -447,9 +447,9 @@
       "get": {
         "summary": "Injury Location Lookup List",
         "description": "The injurylocation endpoint returns the list of all injury locations that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getAllInjuryLocations",
         "responses": {
@@ -475,9 +475,9 @@
       "get": {
         "summary": "Diagnosis Lookup List",
         "description": "The Diagnosis endpoint returns the list of all Diagnosis that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getAllDiagnosis",
         "responses": {
@@ -503,9 +503,9 @@
       "get": {
         "summary": "Diagnosis",
         "description": "Returns a diagnosis based on a single ID",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getDiagnosisById",
         "parameters": [
@@ -538,9 +538,9 @@
       "get": {
         "summary": "Supplementals of Diagnosis",
         "description": "Returns an array of supplementals for the diagnosis",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getSupplementalsByDiagnosis",
         "parameters": [
@@ -576,9 +576,9 @@
       "get": {
         "summary": "Supplementals lookup list",
         "description": "The Supplementals endpoint returns the list of all diagnosis Supplementals that are currently registered with the API.",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getAllSupplementals",
         "parameters": [
@@ -614,9 +614,9 @@
       "get": {
         "summary": "Supplemental",
         "description": "Returns a supplemental based on a single ID",
-        "x-swagger-router-controller": "Default",
+        "x-swagger-router-controller": "Lookup",
         "tags": [
-          "Default"
+          "Lookup"
         ],
         "operationId": "getSupplementalById",
         "parameters": [
