@@ -14,6 +14,9 @@ module.exports.handleResults = function(result, error, res){
     }
 }
 
+module.exports.callback = function(result, error){
+    exports.handleResults(result, error, response);
+};
 
 module.exports.b64 = function (input) {
     var b = new Buffer(JSON.stringify(input));
