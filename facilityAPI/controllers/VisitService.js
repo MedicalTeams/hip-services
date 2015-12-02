@@ -40,7 +40,7 @@ exports.postVisit = function (body, cb) {
                 connection.execSql(request);
             }
             else {
-                visit.status = 3;  // failure that can (should) be retried.
+                visit.status = 4;  // failure that can (should) be retried.
                 cb(visit, [403, "fail - device is not registered"]);
             }
         });

@@ -14,7 +14,7 @@
     "/visits": {
       "post": {
         "summary": "Add visit",
-        "description": "Adds a new patient visit.  This operation takes a JSON visit objects and persists it to the MTI HIP data store.  The service responds with the posted visit with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
+        "description": "Adds a new patient visit.  This operation takes a JSON visit objects and persists it to the MTI HIP data store.  The service responds with the posted visit with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '4' if the visit is a duplicate, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
         "x-swagger-router-controller": "Visit",
         "tags": [
           "Visit"
@@ -49,7 +49,7 @@
     "/visits/upload": {
       "post": {
         "summary": "Upload visits",
-        "description": "Upload an array of visits.  This operation takes a JSON array of visit objects and persists them to the MTI HIP data store.  The service responds with the posted array of visits with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
+        "description": "Upload an array of visits.  This operation takes a JSON array of visit objects and persists them to the MTI HIP data store.  The service responds with the posted array of visits with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '4' if the visit is a duplicate, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
         "x-swagger-router-controller": "Visit",
         "tags": [
           "Visit"
