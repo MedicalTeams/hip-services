@@ -11,6 +11,76 @@
   "host": "clinicwebapp.azurewebsites.net",
   "basePath": "/hip",
   "paths": {
+    "/visits": {
+      "post": {
+        "summary": "Add visit",
+        "description": "Adds a new patient Visit",
+        "x-swagger-router-controller": "Visit",
+        "tags": [
+          "Visit"
+        ],
+        "operationId": "postVisit",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/visit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "visit reference response",
+            "schema": {
+              "$ref": "#/definitions/visit"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
+    "/visits/upload": {
+      "post": {
+        "summary": "Upload visits",
+        "description": "Upload an array of visits.  This operation will add them all.",
+        "x-swagger-router-controller": "Visit",
+        "tags": [
+          "Visit"
+        ],
+        "operationId": "postVisits",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/visitUpload"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "visit reference response",
+            "schema": {
+              "$ref": "#/definitions/visitUpload"
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "schema": {
+              "$ref": "#/definitions/errorModel"
+            }
+          }
+        }
+      }
+    },
     "/devices": {
       "get": {
         "summary": "Get registered devices",
@@ -850,6 +920,10 @@
           "$ref": "#/definitions/id"
         },
         "stiContactsTreated": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "status": {
           "type": "integer",
           "format": "int64"
         },

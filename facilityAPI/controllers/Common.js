@@ -22,3 +22,4 @@ module.exports.b64 = function (input) {
     var b = new Buffer(JSON.stringify(input));
     return b.toString('base64');
 }
+

@@ -3,6 +3,7 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
 var Device = require('./DeviceService');
+var Common = require('./Common');
 
 exports.getAllFacilities = function (cb) {
 
@@ -114,15 +115,11 @@ exports.getVisit = function (visitKey, cb) {
     });
 }
 
-var b64 = function (input) {
-    var b = new Buffer(JSON.stringify(input));
-    return b.toString('base64');
-}
 exports.postVisitAtFacility = function (facilityId, body, cb) {
     handleWithConnection(function (connection, poolcb) {
         var visit = body;
         visit.facility = facilityId;
-        visit.key = b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
+        visit.key = Common.b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
         visit.injuryLocation = visit.injuryLocation || 0;  // post processing requires this to be non-null
         visit.stiContactsTreated = visit.stiContactsTreated || 0;  // post processing requires this to be non-null
 
