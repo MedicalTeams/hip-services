@@ -920,7 +920,7 @@
           "$ref": "#/definitions/id"
         },
         "stiContactsTreated": {
-          "type": "integer",
+          "type": ["integer", "null"],
           "format": "int64"
         },
         "status": {

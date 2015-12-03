@@ -5,13 +5,20 @@ var handleWithConnection = require('../../utils/connectionpool').handleWithConne
 var Device = require('./DeviceService');
 var Common = require('./Common');
 
+
+function buildVisit(sourceVisit) {
+    var visit = sourceVisit;
+    visit.key = Common.b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
+    visit.injuryLocation = visit.injuryLocation || 0;  // post processing requires this to be non-null
+    visit.stiContactsTreated = visit.stiContactsTreated || 0;  // post processing requires this to be non-null
+    if (visit.stiContactsTreated === null || visit.stiContactsTreated < 0)
+        visit.stiContactsTreated = 0;
+    return visit;
+}
+
 exports.postVisit = function (body, cb) {
     handleWithConnection(function (connection, poolcb) {
-        var visit = body;
-        visit.key = Common.b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
-        visit.injuryLocation = visit.injuryLocation || 0;  // post processing requires this to be non-null
-        visit.stiContactsTreated = visit.stiContactsTreated || 0;  // post processing requires this to be non-null
-
+        var visit = buildVisit(body);
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
             " VALUES (@visituuid, @visitjson);", function (err) {
             poolcb();
