@@ -14,7 +14,7 @@
     "/visits": {
       "post": {
         "summary": "Add visit",
-        "description": "Adds a new patient visit.  This operation takes a JSON visit objects and persists it to the MTI HIP data store.  The service responds with the posted visit with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '4' if the visit is a duplicate, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
+        "description": "Adds a new patient visit.  This operation takes a JSON visit objects and persists it to the MTI HIP data store.  The service responds with the posted visit with two differences:  1) the visit.status will be set to ('1' if successfully uploaded, '2' if the visit was not processed because it already has been, '4' if the device associated with the visit post has not been activated, '3' if the visit failed to process for any other reason).  The service augments the visit with a visit.key property generated from the visit's deviceId and visitDate.",
         "x-swagger-router-controller": "Visit",
         "tags": [
           "Visit"
@@ -717,6 +717,7 @@
   },
   "definitions": {
     "facility": {
+      "description": "A medical facility",
       "type": "object",
       "required": [
         "id",
@@ -724,44 +725,55 @@
       ],
       "properties": {
         "id": {
+          "description": "Reference identity for this facility",
           "$ref": "#/definitions/id"
         },
         "name": {
+          "description": "The name of this facility",
           "type": "string"
         },
         "settlement": {
+          "description": "The settlement where this facility is located",
           "type": "string"
         },
         "country": {
+          "description": "The country where this facility is located",
           "type": "string"
         },
         "region": {
+          "description": "The region where this facility is located",
           "type": "string"
         }
       }
     },
     "settlement": {
+      "description": "A Refugee settlement",
       "type": "object",
       "required": [
         "name"
       ],
       "properties": {
         "name": {
+          "description": "The name by which the settlement is known.  Also used as the Reference identity for this settlement",
           "type": "string"
         },
         "country": {
+          "description": "The Country where the settlement is located",
           "type": "string"
         },
         "region": {
+          "description": "The Region where the settlement is located",
           "type": "string"
         },
         "facilityCount": {
+          "description": "The number of facilities at this settlement",
           "type": "integer",
           "format": "int64"
         }
       }
     },
     "citizenship": {
+      "description": "The citizenship status of an individual",
       "type": "object",
       "required": [
         "id",
@@ -769,34 +781,42 @@
       ],
       "properties": {
         "id": {
+          "description": "Reference identity for this citizenship status",
           "$ref": "#/definitions/id"
         },
         "level": {
+          "description": "Descriptive label for this citizenship status",
           "type": "string"
         }
       }
     },
     "device": {
+      "description": "A specific mobile device (e.g. Joe's IPhone) used to run the HIP mobile app",
       "type": "object",
       "required": [
         "appVersion"
       ],
       "properties": {
         "uuid": {
+          "description": "A sequence of characters that uniquely identifies this device",
           "type": "string"
         },
         "appVersion": {
+          "description": "The version of the HIP application installed on this device",
           "type": "string"
         },
         "description": {
+          "description": "A descriptive name for this device.",
           "type": "string"
         },
         "facility": {
+          "description": "Identifies the facility at which this device is registered",
           "$ref": "#/definitions/id"
         }
       }
     },
     "injurylocation": {
+      "description": "A geographic location where an injury was occurs",
       "type": "object",
       "required": [
         "id",
@@ -804,48 +824,52 @@
       ],
       "properties": {
         "id": {
+          "description": "Reference identity for this location",
           "type": "integer",
           "format": "int64"
         },
         "name": {
+          "description": "Textual description of the location",
           "type": "string"
         }
       }
     },
     "diagnosis": {
+      "description": "Represents one diagnosis for a patient",
       "type": "object",
       "required": [
-        "id",
-        "name"
+        "id"
       ],
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "$ref": "#/definitions/id"
         },
         "name": {
+          "description": "The name for this diagnosis",
           "type": "string"
+        },
+        "supplementals": {
+          "description": "Some diagnosis can be extended or clarified by providing supplemental information.  This identifies the set of supplemental information that is appropriate for this diagnosis.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/supplemental"
+          }
         }
       }
     },
     "supplemental": {
+      "description": "Supplemental information used to to extend or clarify a diagnosis",
       "type": "object",
       "required": [
-        "id",
-        "name",
-        "diagnosis"
+        "id"
       ],
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "$ref": "#/definitions/id"
         },
         "name": {
+          "description": "The name of this supplemental information",
           "type": "string"
-        },
-        "diagnosis": {
-          "type": "integer",
-          "format": "int64"
         }
       }
     },
@@ -869,6 +893,7 @@
       }
     },
     "visitUpload": {
+      "description": "A collection of visits for upload",
       "type": "array",
       "items": {
         "$ref": "#/definitions/visit"
@@ -887,47 +912,59 @@
       ],
       "properties": {
         "facility": {
+          "description": "Identifies the facility that the patient visited",
           "$ref": "#/definitions/id"
         },
         "staffMemberName": {
+          "description": "The name of the person who handled the patient visit",
           "type": "string"
         },
         "gender": {
+          "description": "The patient's gender.  The current reporting system only recognizes 'M' or 'F' as valid.",
           "type": "string"
         },
         "beneficiaryType": {
+          "description": "The citizenship status of the patient",
           "$ref": "#/definitions/id"
         },
         "patientAgeMonths": {
+          "description": "The age of the patient in months",
           "type": "integer",
           "format": "int64"
         },
         "isRevisit": {
+          "description": "True if this visit is a 'revisit'",
           "type": "boolean"
         },
         "OPD": {
+          "description": "Identifies the OPD entry associated with this visit",
           "type": "integer",
           "format": "int64"
         },
         "visitDate": {
-          "description": "the timestamp of the visit in the form YYYY-MM-DDThh:mm:ss.000+HHMM ",
+          "description": "The timestamp of the visit in the form YYYY-MM-DDThh:mm:ss.000+HHMM ",
           "type": "string"
         },
         "deviceId": {
+          "description": "Used to uniquely identify the device used to post this visit.  This will be device-specific, but usually a MAC address or serial number.",
           "type": "string"
         },
         "injuryLocation": {
+          "description": "Identifies the location at which injuries were receiving in association with an Injury diagnosis ",
           "$ref": "#/definitions/id"
         },
         "stiContactsTreated": {
+          "description": "The number of patient contacts treated in association with an STI diagnosis",
           "type": ["integer", "null"],
           "format": "int64"
         },
         "status": {
+          "description": "Represents the status of the processing of this patient visit.  Please refer to the visit service for the meanings of the values in this field.",
           "type": "integer",
           "format": "int64"
         },
         "patientDiagnosis": {
+          "description": "The set of diagnosis for this patient during this visit",
           "type": "array",
           "items": {
             "$ref": "#/definitions/diagnosis"
@@ -935,41 +972,8 @@
         }
       }
     },
-    "diagnosis": {
-      "type": "object",
-      "required": [
-        "id"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/id"
-        },
-        "name": {
-          "type": "string"
-        },
-        "supplementals": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/supplemental"
-          }
-        }
-      }
-    },
-    "supplemental": {
-      "type": "object",
-      "required": [
-        "id"
-      ],
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/id"
-        },
-        "name": {
-          "type": "string"
-        }
-      }
-    },
     "id": {
+      "description": "An Integer value used to uniquely identify a resource",
       "type": "integer",
       "format": "int64"
     },
