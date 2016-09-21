@@ -905,7 +905,7 @@
         "beneficiaryType",
         "gender",
         "isRevisit",
-        "patientAgeMonths",
+        "patientAgeLow",
         "patientDiagnosis",
         "staffMemberName",
         "visitDate"
@@ -927,8 +927,8 @@
           "description": "The citizenship status of the patient",
           "$ref": "#/definitions/id"
         },
-        "patientAgeMonths": {
-          "description": "The age of the patient in months",
+        "patientAgeLow": {
+          "description": "The lower end of the age range of the patient in years",
           "type": "integer",
           "format": "int64"
         },
