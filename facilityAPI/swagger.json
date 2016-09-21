@@ -920,8 +920,7 @@
         },
         "patientAgeMonthsLow": {
           "description": "The lower end of the age range of the patient in months",
-          "type": "integer",
-          "format": "int64"
+          "type": "double"
         },
         "isRevisit": {
           "description": "True if this visit is a 'revisit'",
