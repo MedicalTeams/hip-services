@@ -901,15 +901,6 @@
     },
     "visit": {
       "type": "object",
-      "required": [
-        "beneficiaryType",
-        "gender",
-        "isRevisit",
-        "patientAgeMonthsLow",
-        "patientDiagnosis",
-        "staffMemberName",
-        "visitDate"
-      ],
       "properties": {
         "facility": {
           "description": "Identifies the facility that the patient visited",
