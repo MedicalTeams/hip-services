@@ -1,3 +1,6 @@
 # Ignoring node_modules
 node_modules
 debug.log
+
+# Ignoring files created by WebStorm IDE
+.idea
