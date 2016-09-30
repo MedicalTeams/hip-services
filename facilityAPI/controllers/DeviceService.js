@@ -82,7 +82,7 @@ var insertDevice = function (uuid, body, cb) {
     console.log("inserting: " + JSON.stringify(device));
     handleWithConnection(function (connection, poolcb) {
         device.uuid = uuid;
-        var DEFAULT_FACILITY_ID = "select min(faclty_id) from lkup_faclty where upper(hlth_care_faclty) like '%NAKIVALE%' and upper(setlmt) like '%NAKIVALE%'";
+        var DEFAULT_FACILITY_ID = "(select min(faclty_id) from lkup_faclty where upper(hlth_care_faclty) like '%NAKIVALE%' and upper(setlmt) like '%NAKIVALE%')";
         var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
             " VALUES (" + DEFAULT_FACILITY_ID + ", @uuid, @applicationVersion, @description, 'I');", function (err) {
             poolcb();

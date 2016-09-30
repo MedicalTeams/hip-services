@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 
 
 var serverPort = process.env.PORT || 8080;
+console.log("PORT = " + process.env.PORT);
 
 // swaggerRouter configuration
 var options = {
@@ -51,5 +52,6 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
         console.log( swaggerDoc.info.title + ": " + swaggerDoc.info.description );
         console.log( "Service Version: " + swaggerDoc.info.version );
         console.log( "Access services at HTTP://" + JSON.stringify( swaggerDoc.host + swaggerDoc.basePath ) );
+        console.log("NODE_ENV = " + process.env.NODE_ENV);
     });
 });
