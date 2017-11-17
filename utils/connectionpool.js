@@ -7,25 +7,33 @@ var poolConfig = {
     log: true
 };
 
-var connectionConfig = {
-    userName: process.env.SQLAZURECONNSTR_username,
-    password: process.env.SQLAZURECONNSTR_password,
-    server: process.env.SQLAZURECONNSTR_host,
-    // Needed for Microsoft Azure
-    options: {encrypt: true, database: process.env.SQLAZURECONNSTR_database}
-};
+var pool = [];
 
-console.log( "connecting to " + JSON.stringify(connectionConfig.server) );
+var countries = process.env.countries.split(",");
 
-//create the pool
-var pool = new ConnectionPool(poolConfig, connectionConfig);
+for (var country in countries) {
+	var connectionConfig = {
+		userName: process.env[country +"_SQLAZURECONNSTR_username"],
+		password: process.env.[country +"_SQLAZURECONNSTR_password"],
+		server: process.env.[country +"_SQLAZURECONNSTR_host"],
+		// Needed for Microsoft Azure
+		options: {
+			encrypt: true, database: process.env.[country+"_SQLAZURECONNSTR_database "]
+		}
+	};
 
-pool.on('error', function(err) {
-    console.error(err);
-});
+	console.log("connecting to " + JSON.stringify(connectionConfig.server));
 
-exports.handleWithConnection = function(handleStatement) {
-    pool.acquire( function (err, connection) {
+	//create the pool
+	pool[country] = new ConnectionPool(poolConfig, connectionConfig);
+
+	pool[country].on('error', function (err) {
+		console.error(err);
+	});
+}
+
+exports.handleWithConnection = function(country,handleStatement) {
+    pool[country].acquire( function (err, connection) {
         if (err)
             console.error(err);
         return handleStatement(connection, function() {

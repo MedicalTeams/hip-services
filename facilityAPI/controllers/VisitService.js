@@ -16,8 +16,8 @@ function buildVisit(sourceVisit) {
     return visit;
 }
 
-exports.postVisit = function (body, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.postVisit = function (country, body, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var visit = buildVisit(body);
         var request = new Request("INSERT into raw_visit (visit_uuid, visit_json) " +
             " VALUES (@visituuid, @visitjson);", function (err) {
@@ -42,7 +42,7 @@ exports.postVisit = function (body, cb) {
         request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
         console.log("posting: " + JSON.stringify(visit));
 
-        Device.getDeviceByUUID (visit.deviceId, function (result) {
+		Device.getDeviceByUUID(country, visit.deviceId, function (result) {
             if (typeof result !== 'undefined' && result.status === 'A') {
                 connection.execSql(request);
             }

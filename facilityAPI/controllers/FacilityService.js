@@ -5,9 +5,9 @@ var handleWithConnection = require('../../utils/connectionpool').handleWithConne
 var Device = require('./DeviceService');
 var Common = require('./Common');
 
-exports.getAllFacilities = function (cb) {
+exports.getAllFacilities = function (country, cb) {
 
-    return handleWithConnection(function (connection, poolcb) {
+	return handleWithConnection(country, function (connection, poolcb) {
         var facilities = [];
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " order by user_intrfc_sort_ord", function (err) {
@@ -39,8 +39,8 @@ exports.getAllFacilities = function (cb) {
 }
 
 
-exports.getFacilityById = function (facilityId, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getFacilityById = function (country, facilityId, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = {};
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " where faclty_id = @facilityId", function (err) {
@@ -70,8 +70,8 @@ exports.getFacilityById = function (facilityId, cb) {
 }
 
 
-exports.getVisitsByFacility = function (facilityId) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getVisitsByFacility = function (country, facilityId) {
+	handleWithConnection(country, function (connection, poolcb) {
         var examples = {};
 
         examples['application/json'] = {
@@ -88,8 +88,8 @@ exports.getVisitsByFacility = function (facilityId) {
 }
 
 
-exports.getVisit = function (visitKey, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getVisit = function (country, visitKey, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = {};
         var request = new Request("SELECT  visit_json FROM raw_visit" +
             " where visit_uuid = @visitKey", function (err) {
@@ -115,8 +115,8 @@ exports.getVisit = function (visitKey, cb) {
     });
 }
 
-exports.postVisitAtFacility = function (facilityId, body, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.postVisitAtFacility = function (country, facilityId, body, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var visit = body;
         visit.facility = facilityId;
         visit.key = Common.b64({deviceId: visit.deviceId, visitDate: visit.visitDate});
@@ -143,7 +143,7 @@ exports.postVisitAtFacility = function (facilityId, body, cb) {
         request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
         console.log("posting: " + JSON.stringify(visit));
 
-        Device.getDeviceByUUID (visit.deviceId, function (result) {
+		Device.getDeviceByUUID(country, visit.deviceId, function (result) {
             if (typeof result !== 'undefined' && result.status === 'A') {
                 connection.execSql(request);
             }

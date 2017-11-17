@@ -3,8 +3,8 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
 
-exports.getAllDevices = function (cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getAllDevices = function (country, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn from faclty_hw_invtry", function (err) {
             poolcb();
@@ -33,8 +33,8 @@ exports.getAllDevices = function (cb) {
 
 }
 
-exports.getDeviceByUUID = function (uuid, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getDeviceByUUID = function (country, uuid, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result;
         var request = new Request("SELECT mac_addr, aplctn_vrsn, itm_descn, hw_stat from faclty_hw_invtry" +
             " where mac_addr = @uuid", function (err) {
@@ -63,24 +63,24 @@ exports.getDeviceByUUID = function (uuid, cb) {
     });
 }
 
-exports.putDevice = function (uuid, body, cb) {
+exports.putDevice = function (country, uuid, body, cb) {
 
     console.log("put: " + JSON.stringify(body));
-    exports.getDeviceByUUID(uuid, function (result) {
+	exports.getDeviceByUUID(country, uuid, function (result) {
         if (typeof result !== 'undefined') {
-            updateDevice(uuid, body, cb);
+			updateDevice(country, uuid, body, cb);
         }
         else {
-            insertDevice(uuid, body, cb);
+			insertDevice(country, uuid, body, cb);
         }
     });
 
 }
 
-var insertDevice = function (uuid, body, cb) {
+var insertDevice = function (country, uuid, body, cb) {
     var device = body;
     console.log("inserting: " + JSON.stringify(device));
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(country, function (connection, poolcb) {
         device.uuid = uuid;
         var DEFAULT_FACILITY_ID = "(select min(faclty_id) from lkup_faclty where upper(hlth_care_faclty) like '%NAKIVALE%' and upper(setlmt) like '%NAKIVALE%')";
         var request = new Request("INSERT into faclty_hw_invtry (faclty_id, mac_addr, aplctn_vrsn, itm_descn, hw_stat) " +
@@ -107,10 +107,10 @@ var insertDevice = function (uuid, body, cb) {
 }
 
 
-var updateDevice = function (uuid, body, cb) {
+var updateDevice = function (country, uuid, body, cb) {
     var device = body;
     console.log("updating: " + JSON.stringify(device));
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(country, function (connection, poolcb) {
         device.uuid = uuid;
 
         var request = new Request("UPDATE faclty_hw_invtry " +

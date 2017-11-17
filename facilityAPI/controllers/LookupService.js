@@ -3,9 +3,9 @@ var Request = require('tedious').Request;
 var TYPES = require('tedious').TYPES;
 var handleWithConnection = require('../../utils/connectionpool').handleWithConnection;
 
-exports.getAllSettlements = function (cb) {
+exports.getAllSettlements = function (country, cb) {
 
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var settlements = [];
         var request = new Request("SELECT setlmt, cntry, rgn, count(faclty_id) numfaclty from vw_lkup_faclty" +
             " group by setlmt, cntry, rgn", function (err) {
@@ -34,9 +34,9 @@ exports.getAllSettlements = function (cb) {
 
 }
 
-exports.getAllCitizenships = function (cb) {
+exports.getAllCitizenships = function (country, cb) {
 
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT bnfcry_id, bnfcry from vw_lkup_bnfcry" +
             " order by user_intrfc_sort_ord", function (err) {
@@ -65,9 +65,9 @@ exports.getAllCitizenships = function (cb) {
 
 }
 
-exports.getAllInjuryLocations = function (cb) {
+exports.getAllInjuryLocations = function (country, cb) {
 
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_cat_id, splmtl_diag_cat, diag_id from vw_lkup_injury_loc_diag" +
             " order by user_intrfc_sort_ord", function (err) {
@@ -96,9 +96,9 @@ exports.getAllInjuryLocations = function (cb) {
 }
 
 
-exports.getAllDiagnosis = function (cb) {
+exports.getAllDiagnosis = function (country, cb) {
 
-    handleWithConnection(function (connection, poolcb) {
+	handleWithConnection(function (country, connection, poolcb) {
         var result = [];
         var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
             " order by user_intrfc_sort_ord", function (err) {
@@ -129,8 +129,8 @@ exports.getAllDiagnosis = function (cb) {
 
 }
 
-exports.getDiagnosisById = function (diagnosisId, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getDiagnosisById = function (country, diagnosisId, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = {};
         var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
             " where diag_id = @diagnosisId", function (err) {
@@ -159,8 +159,8 @@ exports.getDiagnosisById = function (diagnosisId, cb) {
 
 }
 
-exports.getSupplementalById = function (supplementalId, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getSupplementalById = function (country, supplementalId, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = {};
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where splmtl_diag_id = @supplementalId order by user_intrfc_sort_ord", function (err) {
@@ -190,8 +190,8 @@ exports.getSupplementalById = function (supplementalId, cb) {
 
 }
 
-exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getSupplementalsByDiagnosis = function (country, diagnosisId, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " where diag_id = @diagnosisId order by user_intrfc_sort_ord", function (err) {
@@ -223,8 +223,8 @@ exports.getSupplementalsByDiagnosis = function (diagnosisId, cb) {
 
 }
 
-exports.getAllSupplementals = function (cb) {
-    handleWithConnection(function (connection, poolcb) {
+exports.getAllSupplementals = function (country, cb) {
+	handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT splmtl_diag_id, splmtl_diag_descn, diag_id from vw_lkup_base_splmtl_diag" +
             " order by user_intrfc_sort_ord", function (err) {
