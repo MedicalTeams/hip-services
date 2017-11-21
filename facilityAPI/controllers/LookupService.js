@@ -30,7 +30,7 @@ exports.getAllSettlements = function (country, cb) {
             console.log(JSON.stringify(settlement));
         });
         connection.execSql(request);
-    });
+	}, cb);
 
 }
 
@@ -61,7 +61,7 @@ exports.getAllCitizenships = function (country, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -92,7 +92,7 @@ exports.getAllInjuryLocations = function (country, cb) {
         });
 
         connection.execSql(request);
-    });
+	}, cb);
 }
 
 
@@ -124,7 +124,7 @@ exports.getAllDiagnosis = function (country, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 
 }
@@ -155,7 +155,7 @@ exports.getDiagnosisById = function (country, diagnosisId, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -186,7 +186,7 @@ exports.getSupplementalById = function (country, supplementalId, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -219,7 +219,7 @@ exports.getSupplementalsByDiagnosis = function (country, diagnosisId, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -251,7 +251,7 @@ exports.getAllSupplementals = function (country, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 

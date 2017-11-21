@@ -51,7 +51,7 @@ exports.postVisit = function (country, body, cb) {
                 cb(visit, [403, "fail - device is not registered"]);
             }
         });
-    });
+	}, cb);
 
 }
 

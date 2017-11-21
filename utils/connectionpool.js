@@ -11,18 +11,19 @@ var pool = [];
 
 var countries = process.env.countries.split(",");
 
-for (var country in countries) {
+for (var i = 0, len = countries.length; i < len; i++) {
+	var country = countries[i];
 	var connectionConfig = {
-		userName: process.env[country +"_SQLAZURECONNSTR_username"],
-		password: process.env.[country +"_SQLAZURECONNSTR_password"],
-		server: process.env.[country +"_SQLAZURECONNSTR_host"],
+		userName: process.env["SQLAZURECONNSTR_username_" + country],
+		password: process.env["SQLAZURECONNSTR_password_" + country],
+		server: process.env["SQLAZURECONNSTR_host_" + country],
 		// Needed for Microsoft Azure
 		options: {
-			encrypt: true, database: process.env.[country+"_SQLAZURECONNSTR_database "]
+			encrypt: true, database: process.env["SQLAZURECONNSTR_database_" + country]
 		}
 	};
 
-	console.log("connecting to " + JSON.stringify(connectionConfig.server));
+	console.log("connecting to " + country + " with connection" + JSON.stringify(connectionConfig));
 
 	//create the pool
 	pool[country] = new ConnectionPool(poolConfig, connectionConfig);
@@ -32,10 +33,13 @@ for (var country in countries) {
 	});
 }
 
-exports.handleWithConnection = function(country,handleStatement) {
+exports.handleWithConnection = function (country, handleStatement, error) {
+	if (!pool.hasOwnProperty(country)) {
+		error(400, "Country "+ country + " not found");
+	}
     pool[country].acquire( function (err, connection) {
         if (err)
-            console.error(err);
+			error(500, err);
         return handleStatement(connection, function() {
             var releaseinfo = connection.release();
         })

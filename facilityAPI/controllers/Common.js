@@ -23,3 +23,7 @@ module.exports.b64 = function (input) {
     return b.toString('base64');
 }
 
+module.exports.getCountry = function (req) {
+	return req.headers['country'];
+}
+

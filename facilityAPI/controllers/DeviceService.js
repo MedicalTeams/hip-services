@@ -29,7 +29,7 @@ exports.getAllDevices = function (country, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -60,7 +60,7 @@ exports.getDeviceByUUID = function (country, uuid, cb) {
         });
 
         connection.execSql(request);
-    });
+	}, cb);
 }
 
 exports.putDevice = function (country, uuid, body, cb) {
@@ -102,7 +102,7 @@ var insertDevice = function (country, uuid, body, cb) {
         console.log(JSON.stringify(request));
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }
 
@@ -131,6 +131,6 @@ var updateDevice = function (country, uuid, body, cb) {
 
         connection.execSql(request);
 
-    });
+	}, cb);
 
 }

@@ -34,7 +34,7 @@ exports.getAllFacilities = function (country, cb) {
         });
 
         connection.execSql(request);
-    });
+	}, cb);
 
 }
 
@@ -66,7 +66,7 @@ exports.getFacilityById = function (country, facilityId, cb) {
         });
 
         connection.execSql(request);
-    });
+	}, cb);
 }
 
 
@@ -83,8 +83,7 @@ exports.getVisitsByFacility = function (country, facilityId) {
 
         if (Object.keys(examples).length > 0)
             return examples[Object.keys(examples)[0]];
-    });
-
+	}, cb);
 }
 
 
@@ -112,7 +111,7 @@ exports.getVisit = function (country, visitKey, cb) {
         });
 
         connection.execSql(request);
-    });
+	}, cb);
 }
 
 exports.postVisitAtFacility = function (country, facilityId, body, cb) {
@@ -151,20 +150,20 @@ exports.postVisitAtFacility = function (country, facilityId, body, cb) {
                 cb({"error": "fail - device is not registered"}, 400);
             }
         });
-    });
+	}, cb);
 
 }
 
 var async = require('async');
 
-exports.postVisitsAtFacility = function (facilityId, body, cb) {
+exports.postVisitsAtFacility = function (country, facilityId, body, cb) {
     var visits = body;
     var count = 0;
 
     var rollupresults = {successfulVisits: [], failedVisits: []};
     async.eachSeries(visits, function (visit, visitDone) {
         var visit = visit;
-        exports.postVisitAtFacility(facilityId, visit, function (result, error) {
+		exports.postVisitAtFacility(country, facilityId, visit, function (result, error) {
             if (error) {
                 rollupresults.failedVisits.push({key: result, error: error});
             } else {
@@ -179,14 +178,14 @@ exports.postVisitsAtFacility = function (facilityId, body, cb) {
         else {
             cb(rollupresults);
         }
-    });
+    }, cb);
 
 }
 
 
-exports.getFacilitiesBySettlement = function (settlement, cb) {
+exports.getFacilitiesBySettlement = function (country, settlement, cb) {
 
-    handleWithConnection(function (connection, poolcb) {
+    handleWithConnection(country, function (connection, poolcb) {
         var facilities = [];
         var request = new Request("SELECT faclty_id, hlth_care_faclty, setlmt, cntry, rgn from vw_lkup_faclty" +
             " where setlmt = @settlement order by user_intrfc_sort_ord", function (err) {
@@ -215,5 +214,5 @@ exports.getFacilitiesBySettlement = function (settlement, cb) {
         request.addParameter('settlement', TYPES.NVarChar, decodeURIComponent(settlement));
 
         connection.execSql(request);
-    });
+	}, cb);
 }

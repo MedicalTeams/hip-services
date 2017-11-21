@@ -4,9 +4,11 @@ var Lookup = require('./LookupService');
 var Facility = require('./FacilityService');
 var common = require('./Common');
 var handleResults = common.handleResults;
+var getCountry = common.getCountry;
 
 module.exports.getAllSettlements = function getAllSettlements(req, res, next) {
-    Lookup.getAllSettlements(function (result) {
+	var country = getCountry(req);
+	Lookup.getAllSettlements(country, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -20,7 +22,8 @@ module.exports.getAllSettlements = function getAllSettlements(req, res, next) {
 };
 
 module.exports.getAllCitizenships = function getAllCitizenships(req, res, next) {
-    Lookup.getAllCitizenships(function (result) {
+	var country = getCountry(req);
+	Lookup.getAllCitizenships(country, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -35,7 +38,8 @@ module.exports.getAllCitizenships = function getAllCitizenships(req, res, next) 
 
 
 module.exports.getAllInjuryLocations = function getAllInjuryLocations(req, res, next) {
-    Lookup.getAllInjuryLocations(function (result) {
+	var country = getCountry(req);
+    Lookup.getAllInjuryLocations(country, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -49,7 +53,8 @@ module.exports.getAllInjuryLocations = function getAllInjuryLocations(req, res, 
 };
 
 module.exports.getAllDiagnosis = function getAllDiagnosis(req, res, next) {
-    Lookup.getAllDiagnosis(function (result) {
+	var country = getCountry(req);
+    Lookup.getAllDiagnosis(country, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -64,9 +69,10 @@ module.exports.getAllDiagnosis = function getAllDiagnosis(req, res, next) {
 
 
 module.exports.getAllSupplementals = function getAllSupplementals(req, res, next) {
-    var diagnosisId = req.swagger.params.diagnosis.value;
+	var diagnosisId = req.swagger.params.diagnosis.value;
+	var country = getCountry(req);
     if (typeof diagnosisId !== 'undefined') {
-        Lookup.getSupplementalsByDiagnosis(diagnosisId, function (result) {
+        Lookup.getSupplementalsByDiagnosis(country, diagnosisId, function (result) {
             if (typeof result !== 'undefined') {
                 console.log(JSON.stringify(result))
                 res.setHeader('Content-Type', 'application/json');
@@ -78,7 +84,7 @@ module.exports.getAllSupplementals = function getAllSupplementals(req, res, next
         });
     }
     else {
-        Lookup.getAllSupplementals(function (result) {
+        Lookup.getAllSupplementals(country, function (result) {
             if (typeof result !== 'undefined') {
                 console.log(JSON.stringify(result))
 
@@ -94,8 +100,9 @@ module.exports.getAllSupplementals = function getAllSupplementals(req, res, next
 
 
 module.exports.getSupplementalById = function getSupplementalById(req, res, next) {
-    var supplementalId = req.swagger.params['supplementalId'].value;
-    Lookup.getSupplementalById(supplementalId, function (result) {
+	var supplementalId = req.swagger.params['supplementalId'].value;
+	var country = getCountry(req);
+    Lookup.getSupplementalById(country, supplementalId, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
             res.setHeader('Content-Type', 'application/json');
@@ -108,8 +115,9 @@ module.exports.getSupplementalById = function getSupplementalById(req, res, next
 };
 
 module.exports.getDiagnosisById = function getDiagnosisById(req, res, next) {
-    var diagnosisId = req.swagger.params['diagnosisId'].value;
-    Lookup.getDiagnosisById(diagnosisId, function (result) {
+	var diagnosisId = req.swagger.params['diagnosisId'].value;
+	var country = getCountry(req);
+    Lookup.getDiagnosisById(country, diagnosisId, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
             res.setHeader('Content-Type', 'application/json');
@@ -122,8 +130,9 @@ module.exports.getDiagnosisById = function getDiagnosisById(req, res, next) {
 };
 
 module.exports.getSupplementalsByDiagnosis = function getSupplementalsByDiagnosis(req, res, next) {
-    var diagnosisId = req.swagger.params['diagnosisId'].value;
-    Lookup.getSupplementalsByDiagnosis(diagnosisId, function (result) {
+	var diagnosisId = req.swagger.params['diagnosisId'].value;
+	var country = getCountry(req);
+    Lookup.getSupplementalsByDiagnosis(country, diagnosisId, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
             res.setHeader('Content-Type', 'application/json');
@@ -137,8 +146,9 @@ module.exports.getSupplementalsByDiagnosis = function getSupplementalsByDiagnosi
 
 
 module.exports.getFacilitiesBySettlement = function getFacilitiesBySettlement(req, res, next) {
-    var settlement = req.swagger.params['settlement'].value;
-    Facility.getFacilitiesBySettlement(settlement, function (result) {
+	var settlement = req.swagger.params['settlement'].value;
+	var country = getCountry(req);
+    Facility.getFacilitiesBySettlement(country, settlement, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
             res.setHeader('Content-Type', 'application/json');
