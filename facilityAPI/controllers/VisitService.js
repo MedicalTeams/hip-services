@@ -57,14 +57,15 @@ exports.postVisit = function (country, body, cb) {
 
 var async = require('async');
 
-exports.postVisits = function (body, cb) {
+exports.postVisits = function (country, body, cb) {
     var visits = body;
     var count = 0;
 
+    console.log("Body:" + body);
     var rollupresults = [];
     async.eachSeries(visits, function (visit, visitDone) {
         var visit = visit;
-        exports.postVisit(visit, function (result, error) {
+        exports.postVisit(country, visit, function (result, error) {
             rollupresults.push(result);
             visitDone();
         });
