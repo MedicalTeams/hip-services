@@ -24,6 +24,6 @@ module.exports.b64 = function (input) {
 }
 
 module.exports.getCountry = function (req) {
-	return req.headers['country'];
+	return req.headers['country'] === undefined? "" : req.headers['country'];
 }
 
