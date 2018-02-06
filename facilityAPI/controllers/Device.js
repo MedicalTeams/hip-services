@@ -5,8 +5,7 @@ var handleResults = common.handleResults;
 var getCountry = common.getCountry;
 
 module.exports.getAllDevices = function getAllDiagnosis(req, res, next) {
-	var country = getCountry(req);
-    Device.getAllDevices(country, function (result) {
+	Device.getAllDevices("_", function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -21,8 +20,7 @@ module.exports.getAllDevices = function getAllDiagnosis(req, res, next) {
 
 module.exports.getDevice = function getDevice(req, res, next) {
 	var uuid = req.swagger.params['uuid'].value;
-	var country = getCountry(req);
-    Device.getDeviceByUUID(country, uuid, function (result) {
+	Device.getDeviceByUUID("_", uuid, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
 
@@ -38,9 +36,8 @@ module.exports.getDevice = function getDevice(req, res, next) {
 module.exports.putDevice = function putDevice(req, res, next) {
     var body = req.swagger.params['body'].value;
 	var uuid = req.swagger.params['uuid'].value;
-	var country = getCountry(req);
-
-    var result = Device.putDevice(country, uuid, body, function (result) {
+	
+    var result = Device.putDevice("_", uuid, body, function (result) {
         if (typeof result !== 'undefined') {
             console.log(JSON.stringify(result))
             res.setHeader('Content-Type', 'application/json');
