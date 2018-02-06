@@ -34,6 +34,7 @@ for (var i = 0, len = countries.length; i < len; i++) {
 }
 
 exports.handleWithConnection = function (country, handleStatement, error) {
+	console.log(country);
 	if (!pool.hasOwnProperty(country)) {
 		error(400, "Country "+ country + " not found");
 	}

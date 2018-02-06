@@ -98,7 +98,7 @@ exports.getAllInjuryLocations = function (country, cb) {
 
 exports.getAllDiagnosis = function (country, cb) {
 
-	handleWithConnection(function (country, connection, poolcb) {
+    handleWithConnection(country, function (connection, poolcb) {
         var result = [];
         var request = new Request("SELECT diag_id, diag_descn from vw_lkup_diag" +
             " order by user_intrfc_sort_ord", function (err) {
