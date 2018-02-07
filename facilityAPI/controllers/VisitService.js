@@ -42,7 +42,7 @@ exports.postVisit = function (country, body, cb) {
         request.addParameter('visitjson', TYPES.NVarChar, JSON.stringify(visit));
         console.log("posting: " + JSON.stringify(visit));
 
-		Device.getDeviceByUUID(country, visit.deviceId, function (result) {
+		Device.getDeviceByUUID("_", visit.deviceId, function (result) {
             if (typeof result !== 'undefined' && result.status === 'A') {
                 connection.execSql(request);
             }
